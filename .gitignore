@@ -1,0 +1,19 @@
+# Ignore old rapport files at root
+rapport.aux
+rapport.lof
+rapport.log
+rapport.lot
+rapport.tex
+rapport.toc
+
+# LaTeX build artifacts
+*.aux
+*.lof
+*.log
+*.lot
+*.toc
+*.out
+*.bbl
+*.bcf
+*.blg
+*.run.xml

@@ -1,8 +1,0 @@
-\babel@toc {french}{}\relax 
-\contentsline {figure}{\numberline {1}{\ignorespaces Architecture workflow globale du framework ETL}}{17}{}%
-\contentsline {figure}{\numberline {2}{\ignorespaces Vue d'ensemble de la pipeline de factures — 8 phases}}{18}{}%
-\contentsline {figure}{\numberline {3}{\ignorespaces Schéma entité-relation des tables cibles de la pipeline de factures}}{18}{}%
-\contentsline {figure}{\numberline {4}{\ignorespaces Interface de l'application Axelor Mapper}}{19}{}%
-\contentsline {figure}{\numberline {5}{\ignorespaces Interface de développement Apache Hop GUI}}{22}{}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Architecture globale du système — deux flux complémentaires}}{24}{}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Architecture de l'application Axelor Mapper}}{29}{}%
