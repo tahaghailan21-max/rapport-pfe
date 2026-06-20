@@ -1,0 +1,32 @@
+    /home/taha/Desktop/randies/PFE/AOS-ETL-Framework/mon-rapport-pfe/v2/
+  
+  - Entry point: main.tex, which \include's the chapters under chapters/.
+  - Chapters in scope: chapters/chap-5-architecture.tex, chap-6-implementation.tex,
+    chap-7-resultats.tex.
+  - It compiles with XeLaTeX (uses fontspec + polyglossia) — NOT pdflatex:
+        cd .../mon-rapport-pfe/v2 && xelatex -interaction=nonstopmode main.tex
+  - IGNORE the stale single-file mon-rapport-pfe/rapport.tex — it's an old copy, do not edit it.
+
+  Work in this order, and DO NOT skip ahead:
+
+  1. REVIEW & CORRECT, bit by bit. Go through chapters 5, 6, then 7, one section
+     (or subsection) at a time. For each: show me the current content, point out what
+     could be improved (accuracy, clarity, structure, gaps), and propose changes.
+     WAIT for my go-ahead before editing each part — we decide together what to change.
+     Do not rewrite whole chapters in one shot.
+
+  2. HUMANIZE. Once the content is correct, I'll drop a skill for humanizing the text.
+     Wait until I've given you that skill, then apply it to the reviewed chapters.
+
+  3. MISE EN PAGE. Last, change the layout/formatting so it matches Mouhcine's report.
+     I'll provide Mouhcine's report (or its template/preamble) for you to match —
+     wait for it before touching the layout.
+
+  Important context for chapter 7 (Résultats): the framework performance numbers are
+  REAL measurements; the native-import comparison is an ESTIMATE, not a measurement
+  (flagged with a "% NOTE IMPORTANTE" comment in chap-7-resultats.tex). Do not present
+  the estimate as measured, and don't invent benchmark numbers. There's a memory note
+  "benchmark_chap7" with the full context.
+
+  Start with chapter 5, section by section. Re-compile with xelatex after edits to
+  confirm it still builds.

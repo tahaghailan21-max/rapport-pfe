@@ -1,0 +1,239 @@
+\chapter{Cadrage du besoin et méthodologie de travail}
+\label{chap:cadrage}
+
+Ce chapitre formalise les besoins fonctionnels et non fonctionnels du framework, présente la méthodologie de travail adoptée et le planning de réalisation.
+
+%% ============================================================
+\section{Cadrage du besoin}
+%% ============================================================
+
+\subsection{Utilisateurs cibles}
+
+Le framework AOS-ETL s'adresse principalement aux \textbf{responsables d'intégration} chez Axelor — les consultants fonctionnels chargés de migrer les données des clients vers l'ERP lors des déploiements. Ces utilisateurs possèdent une connaissance du modèle métier Axelor mais ne sont pas nécessairement développeurs Java. Ils manipulent des fichiers CSV issus des systèmes legacy des clients et doivent les transformer pour les rendre conformes au schéma AOS.
+
+\subsection{Analyse des besoins utilisateurs}
+
+Les besoins exprimés par les consultants d'intégration sont les suivants :
+\begin{itemize}
+    \item Pouvoir importer des données sans écrire de code Java ;
+    \item Disposer d'un outil qui comprend automatiquement la structure du fichier source et propose un mapping vers le schéma Axelor ;
+    \item Être guidé sur les dépendances entre entités (par exemple : importer les familles de produits avant les produits) ;
+    \item Obtenir un rapport clair des enregistrements rejetés avec la raison de l'échec ;
+    \item Pouvoir ré-exécuter un import sans risque de doublons après correction des données source.
+\end{itemize}
+
+\subsection{Périmètre du projet}
+
+Le périmètre retenu couvre l'import de quatre domaines d'entités métier de complexité croissante :
+\begin{enumerate}
+    \item \textbf{Produits} — unités de mesure, familles, catégories, produits (FK simples, mode upsert) ;
+    \item \textbf{Partenaires} — adresses, contacts, entreprises (parsing d'adresses embarquées, tables de jonction) ;
+    \item \textbf{Commandes de vente} — commandes, lignes, taxes (statuts conditionnels, séquences, totaux calculés) ;
+    \item \textbf{Factures} — factures, lignes, taxes, échéances (vérifications comptables, ventilation).
+\end{enumerate}
+
+Sont hors périmètre : la réconciliation stock, les mouvements comptables automatiques et les processus de fabrication — ces traitements relèvent de la logique native d'Axelor après import.
+
+%% ============================================================
+\section{Priorisation des fonctionnalités}
+%% ============================================================
+
+Le tableau~\ref{tab:priorisation} classe les fonctionnalités du framework selon leur priorité, suivant la méthode MoSCoW (Must Have, Should Have, Nice to Have).
+
+\begin{table}[H]
+  \centering
+  \renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{p{5.5cm} p{7.5cm}}
+    \toprule
+    \rowcolor{gray!20}
+    \textbf{Fonctionnalité} & \textbf{Justification} \\
+    \midrule
+    \multicolumn{2}{l}{\cellcolor{gray!10}\textbf{Must Have}} \\
+    \midrule
+    Import des 4 entités métier & Périmètre contractuel du stage \\
+    \rowcolor{gray!5}
+    Upsert / idempotence & Garantie de fiabilité des imports \\
+    Résolution automatique des FK & Cœur du pattern ETL \\
+    \rowcolor{gray!5}
+    Accès direct PostgreSQL & Contrainte de performance \\
+    Rapports d'erreurs & Traçabilité des rejets \\
+    \rowcolor{gray!5}
+    Skill analyze-and-map & Automatisation du mapping \\
+    Skill generate-pipeline & Réduction du temps de configuration \\
+    \midrule
+    \multicolumn{2}{l}{\cellcolor{gray!10}\textbf{Should Have}} \\
+    \midrule
+    Application Axelor Mapper & Interface pour les consultants \\
+    \rowcolor{gray!5}
+    Golden dataset de validation & Preuve de conformité \\
+    Génération de workflows & Orchestration automatique \\
+    \rowcolor{gray!5}
+    Streaming des logs en temps réel & Visibilité sur l'exécution \\
+    \midrule
+    \multicolumn{2}{l}{\cellcolor{gray!10}\textbf{Nice to Have}} \\
+    \midrule
+    Consultation résultats dans l'app & Évite d'aller en base manuellement \\
+    \rowcolor{gray!5}
+    Thème sombre pour le terminal & Confort visuel \\
+    Drag-and-drop des fichiers CSV & Ergonomie d'upload \\
+    \rowcolor{gray!5}
+    Auto-collapse du terminal après mapping & Fluidité de navigation \\
+    \bottomrule
+  \end{tabular}
+  \caption{Priorisation des fonctionnalités (MoSCoW)}
+  \label{tab:priorisation}
+\end{table}
+
+%% ============================================================
+\section{Besoins fonctionnels et non fonctionnels}
+%% ============================================================
+
+\subsection{Besoins fonctionnels}
+
+\begin{enumerate}
+    \item \textbf{Import de quatre domaines d'entités~:}
+    \begin{itemize}
+        \item \emph{Produits}~: unités, familles, catégories, produits ;
+        \item \emph{Partenaires}~: adresses, contacts, entreprises ;
+        \item \emph{Commandes de vente}~: commandes, lignes, taxes, totaux ;
+        \item \emph{Factures}~: factures, lignes, taxes, échéances.
+    \end{itemize}
+
+    \item \textbf{Résolution automatique des dépendances FK~:} chaque entité référençant une autre doit voir ses clés étrangères résolues sans intervention manuelle, en respectant l'ordre topologique d'import.
+
+    \item \textbf{Support de l'upsert (idempotence via \texttt{import\_id})~:} si un enregistrement existe déjà, le système effectue une mise à jour plutôt qu'une insertion en doublon.
+
+    \item \textbf{Mapping assisté par IA~:} analyser le fichier CSV source, proposer un mapping colonnes$\rightarrow$champs cibles, et résoudre les FK de manière interactive avec le consultant.
+
+    \item \textbf{Génération assistée par IA~:} produire les fichiers XML Apache Hop à partir du manifeste JSON validé.
+
+    \item \textbf{Interface web (Axelor Mapper)~:} offrir aux consultants une application guidant l'ensemble du processus~: upload CSV, mapping interactif, validation du manifeste, génération et exécution des pipelines.
+\end{enumerate}
+
+\subsection{Besoins non fonctionnels}
+
+\textbf{Performance~:} Le système doit être capable de traiter des volumes importants de données (plusieurs milliers d'enregistrements par entité) dans des délais raisonnables.
+
+\textbf{Autonomie~:} Le framework fonctionne en accès direct à la base PostgreSQL, sans appel API vers l'application Axelor.
+
+\textbf{Maintenabilité~:} Les pipelines sont définis en format XML déclaratif, intégralement versionnables sous Git.
+
+%% ============================================================
+\section{Méthodologie de travail}
+\label{sec:methodologie}
+%% ============================================================
+
+\subsection{Méthode adoptée et justification}
+
+Nous avons adopté la \textbf{méthode incrémentale}, qui consiste à décomposer le projet en incréments fonctionnels livrés successivement. Chaque incrément ajoute de nouvelles fonctionnalités au système tout en s'appuyant sur les livrables précédents.
+
+Ce choix se justifie par rapport aux alternatives :
+\begin{itemize}
+    \item \textbf{Cycle en V} — inadapté car les besoins ont évolué au fil du stage (découverte progressive de la complexité des entités AOS) ;
+    \item \textbf{Scrum} — trop lourd pour un projet mono-développeur sans Product Owner dédié ;
+    \item \textbf{Méthode incrémentale} — permet de livrer un module fonctionnel à chaque itération, de valider avec l'encadrant, et d'ajuster les priorités pour l'incrément suivant.
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{incremental-model.png}
+  \caption{Principe de la méthode incrémentale}
+  \label{fig:methode-incrementale-2}
+\end{figure}
+
+\subsection{Outils de gestion de projet}
+
+\begin{itemize}
+    \item \textbf{Git} — versionnement de l'intégralité des artefacts (pipelines XML, manifestes JSON, code Python/React, skills IA) ;
+    \item \textbf{Redmine} — suivi des tickets et des tâches par incrément ;
+    \item \textbf{Google Meet} — réunions quotidiennes (daily stand-ups) avec les managers projet et technique.
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{redmine-tickets.png}
+  \caption{Plateforme Redmine — suivi des tickets du projet}
+  \label{fig:suivi-redmine}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{agenda-google-dailies.png}
+  \caption{Extrait de l'agenda Google — réunions quotidiennes de suivi}
+  \label{fig:suivi-agenda}
+\end{figure}
+
+\subsection{Équipe projet}
+
+L'équipe projet impliquée dans la réalisation de ce stage est présentée dans le tableau~\ref{tab:equipe-projet}.
+
+\begin{table}[H]
+  \centering
+  \renewcommand{\arraystretch}{1.5}
+  \begin{tabular}{p{5cm} p{3.5cm} p{5.5cm}}
+    \toprule
+    \rowcolor{gray!20}
+    \textbf{Nom} & \textbf{Rôle} & \textbf{Fonction} \\
+    \midrule
+    \rowcolor{gray!5}
+    Taha GHAILAN              & Stagiaire PFE       & Conception et développement du framework ETL et de l'application Mapper \\
+    M. Abderrahim Aabane      & Tuteur entreprise   & Ingénieur R\&D, Axelor Maroc — encadrement technique quotidien \\
+    \rowcolor{gray!5}
+    M. Pierre Couderc         & Manager projet      & Pilotage projet et validation des livrables, Axelor \\
+    M. Jonathan Michelon      & Manager technique   & Validation des choix d'architecture, Axelor \\
+    \rowcolor{gray!5}
+    Pr. El Bouzekri El Idrissi Younes & Encadrant académique & Professeur à l'ENSA de Kénitra \\
+    \bottomrule
+  \end{tabular}
+  \caption{Ressources humaines du projet}
+  \label{tab:equipe-projet}
+\end{table}
+
+\subsection{Incréments réalisés}
+
+Le projet a été découpé en sept incréments~:
+
+\begin{itemize}
+  \item \textbf{Incrément 1~:} Pipelines d'import des produits
+  \item \textbf{Incrément 2~:} Pipelines d'import des partenaires
+  \item \textbf{Incrément 3~:} Pipelines d'import des commandes de vente
+  \item \textbf{Incrément 4~:} Pipelines d'import des factures
+  \item \textbf{Incrément 5~:} Interface Axelor Mapper
+  \item \textbf{Incrément 6~:} Skill analyze-and-map
+  \item \textbf{Incrément 7~:} Skills de génération (pipelines + workflows)
+\end{itemize}
+
+%% ============================================================
+\section{Planification du projet}
+\label{sec:planning}
+%% ============================================================
+
+\begin{figure}[H]
+    \centering
+    \begin{ganttchart}[
+        hgrid,
+        vgrid,
+        x unit=0.6cm,
+        y unit chart=0.7cm,
+        title height=1,
+        bar/.style={fill=blue!40},
+        bar label font=\small,
+        title label font=\small
+    ]{1}{15}
+        \gantttitle{Semaines}{15} \\
+        \gantttitlelist{1,...,15}{1} \\
+
+        \ganttbar{Écriture des pipelines ETL}{1}{4} \\
+        \ganttbar{Application Axelor Mapper}{5}{7} \\
+        \ganttbar{Écriture des skills IA}{8}{11} \\
+        \ganttbar{Tests, validation \& rédaction}{12}{15}
+    \end{ganttchart}
+    \caption{Diagramme de Gantt — planning de réalisation}
+    \label{fig:gantt-2}
+\end{figure}
+
+%% ============================================================
+\section*{Conclusion}
+%% ============================================================
+
+Ce chapitre a formalisé les besoins du framework, présenté la méthodologie incrémentale adoptée, les outils de gestion et le planning de réalisation. Le chapitre suivant présente la conception fonctionnelle du système à travers les diagrammes UML.

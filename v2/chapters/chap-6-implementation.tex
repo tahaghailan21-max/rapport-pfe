@@ -1,0 +1,631 @@
+\chapter{Implémentation}
+\label{chap:implementation}
+
+Ce chapitre décrit comment la solution est construite~: l'environnement de développement, puis les réalisations concrètes (pipelines ETL, skills IA, application Mapper) avec captures d'écran commentées.
+
+%% ============================================================
+\section{Environnement et outils de développement}
+%% ============================================================
+
+\begin{table}[H]
+  \centering
+  \renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{p{4cm} p{4cm} p{5.5cm}}
+    \toprule
+    \rowcolor{gray!20}
+    \textbf{Catégorie} & \textbf{Outil} & \textbf{Usage} \\
+    \midrule
+    \rowcolor{gray!5}
+    IDE             & VS Code               & Développement Python/React/skills \\
+    ETL             & Apache Hop 2.0        & Conception et exécution des pipelines \\
+    \rowcolor{gray!5}
+    Base de données & PostgreSQL 15         & Base cible Axelor Open Suite \\
+    Versionnement   & Git                   & Pipelines XML, manifestes, code \\
+    \rowcolor{gray!5}
+    Agent IA        & Claude CLI            & Exécution des skills \\
+    Backend         & Python 3.10 + FastAPI & API REST + WebSocket \\
+    \rowcolor{gray!5}
+    Frontend        & React 18 + TypeScript & Interface utilisateur + xterm.js \\
+    Gestion projet  & Redmine               & Suivi des tickets \\
+    \bottomrule
+  \end{tabular}
+  \caption{Environnement et outils de développement}
+  \label{tab:outils-dev}
+\end{table}
+
+%% ============================================================
+\section{Présentation des réalisations}
+%% ============================================================
+
+\subsection{Pipelines d'import (Apache Hop)}
+
+\subsubsection{Structure du projet}
+
+Le projet est organisé selon la structure suivante, versionnée sous Git~:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{structure-projet-apache-hop.png}
+    \caption{Structure du projet Apache Hop}
+    \label{fig:structure-projet}
+\end{figure}
+
+Les dossiers principaux sont~:
+\begin{itemize}
+    \item \texttt{datasets/} — fichiers CSV source organisés par entité ;
+    \item \texttt{pipelines/} — fichiers \texttt{.hpl} (pipelines de transformation) ;
+    \item \texttt{workflows/} — fichiers \texttt{.hwf} (orchestrateurs) ;
+    \item \texttt{manifests/} — fichiers JSON décrivant le mapping ;
+    \item \texttt{metadata/rdbms/} — configuration de la connexion PostgreSQL ;
+    \item \texttt{reports/} — rapports d'erreurs générés à l'exécution.
+\end{itemize}
+
+\subsubsection{Entité Produits}
+
+Le module comprend quatre pipelines orchestrés par le workflow \texttt{import\_product}~:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{workflows-import_product.png}
+    \caption{Workflow import\_product — orchestration séquentielle}
+    \label{fig:workflow-product}
+\end{figure}
+
+Le workflow intègre des \textit{preflight checks}~: vérification de l'existence du fichier CSV et test de la connexion BD. En cas d'échec, l'exécution est interrompue par une action Abort.
+
+\paragraph{Pipeline de création des unités manquantes} Ce pipeline implémente le pattern \textit{find-or-create}~: il lit le CSV principal des produits, extrait les noms d'unités référencées, déduplique, vérifie lesquelles existent déjà en base, et insère uniquement les manquantes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{create-missing-units.png}
+    \caption{Pipeline create\_missing\_units — création des unités manquantes}
+    \label{fig:create-missing-units}
+\end{figure}
+
+\paragraph{Pipeline d'import des familles} Import des familles de produits avec le pattern upsert simple (import\_id + name, pas de FK à résoudre).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{csv_to_db_product_families.png}
+    \caption{Pipeline csv\_to\_db\_product\_families}
+    \label{fig:pipeline-families}
+\end{figure}
+
+\paragraph{Pipeline d'import des catégories} Import des catégories de produits, même pattern que les familles.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{csv_to_db_product_categories.png}
+    \caption{Pipeline csv\_to\_db\_product\_categories}
+    \label{fig:pipeline-categories}
+\end{figure}
+
+\paragraph{Pipeline d'import des produits} Le pipeline le plus complexe de l'entité~: import des produits avec résolution de multiples FK (unité, famille, catégorie, devise, fournisseur), gestion des champs calculés (full\_name), et écriture dans des tables secondaires (account\_management).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{csv_to_db_products.png}
+    \caption{Pipeline csv\_to\_db\_products — import complet des produits}
+    \label{fig:pipeline-products}
+\end{figure}
+
+\subsubsection{Entité Partenaires}
+
+Six pipelines orchestrés par le workflow \texttt{import\_partners}~:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{import_partners.png}
+    \caption{Workflow import\_partners — orchestration de l'entité partenaires}
+    \label{fig:workflow-partners}
+\end{figure}
+
+L'ordre est imposé par les dépendances~: adresses avant partenaires, liaisons après les deux.
+
+\paragraph{Pipeline d'import des adresses} Ce pipeline lit le fichier \texttt{partners.csv} et en extrait les adresses embarquées (format texte libre~: ``70 RUE PASTORELLI | 06000 NICE | FRANCE''). Il parse chaque adresse en composantes (rue, code postal + ville, pays), déduplique les adresses identiques, et insère uniquement celles qui n'existent pas encore en base. Le mode est \textit{insert-only}~: pas d'update, car une adresse ne change pas.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{import_address.png}
+    \caption{Pipeline import\_address — parsing et insertion des adresses}
+    \label{fig:pipeline-address}
+\end{figure}
+
+\paragraph{Pipeline d'import des partenaires} Ce pipeline implémente le pattern upsert complet pour les partenaires. Il résout les FK vers~: l'adresse principale (par import\_id), la devise (par code), le mode de paiement, les conditions de paiement, la catégorie partenaire et la position fiscale. Les partenaires sont classés en deux types~: entreprises (partnerTypeSelect=1) et contacts (partnerTypeSelect=2).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{import_partner.png}
+    \caption{Pipeline import\_partner — import avec résolution FK multiples}
+    \label{fig:pipeline-partner}
+\end{figure}
+
+\paragraph{Pipeline de calcul des champs d'affichage} Ce pipeline est de type \textit{post-SQL}~: il ne lit pas de CSV mais exécute des requêtes SQL directement sur la base pour calculer des champs dérivés. Il génère les séquences partenaires (\texttt{partner\_seq}), construit les champs d'affichage (\texttt{full\_name}, \texttt{simple\_full\_name}), et crée les enregistrements dans la table \texttt{base\_partner\_address} qui lie chaque partenaire à son adresse de facturation.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{fix_partner_display_fields.png}
+    \caption{Pipeline fix\_partner\_display\_fields — calcul des champs dérivés par SQL}
+    \label{fig:pipeline-fix-display}
+\end{figure}
+
+\paragraph{Pipeline de liaison partenaire-adresse} Ce pipeline peuple la table de jonction \texttt{base\_partner\_address} qui associe chaque partenaire à ses adresses (facturation, livraison). Il lit un CSV dédié contenant les paires (partner\_importId, address\_importId), résout les deux FK, vérifie que la liaison n'existe pas déjà (idempotence), puis insère.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{link_partner_address.png}
+    \caption{Pipeline link\_partner\_address — liaison partenaire-adresse}
+    \label{fig:pipeline-link-address}
+\end{figure}
+
+\paragraph{Pipeline de liaison partenaire-société} Ce pipeline associe les partenaires à leurs sociétés dans la table de jonction Many-to-Many. Il résout le partenaire par import\_id et la société par code, vérifie l'absence de doublon, puis insère la liaison.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{link_company_set.png}
+    \caption{Pipeline link\_company\_set — liaison partenaire-société}
+    \label{fig:pipeline-link-company}
+\end{figure}
+
+\subsubsection{Entité Commandes de vente}
+
+Quatre pipelines orchestrés par le workflow \texttt{import\_sale\_orders\_v3}~:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{import_sale_orders_v3.png}
+    \caption{Workflow import\_sale\_orders}
+    \label{fig:workflow-sale}
+\end{figure}
+
+\paragraph{Pipeline d'import des commandes} Ce pipeline implémente le pattern upsert avec des particularités~: il résout 12 FK (client, contact, adresses, commercial, équipe, mode de paiement, condition de paiement, devise, société, paramètres d'impression, confirmé par). Il intègre un \textit{status\_sequence} — un branchement conditionnel qui génère le numéro de commande différemment selon le statut (brouillon vs confirmé). Un champ calculé \texttt{full\_name} est produit à partir du numéro de séquence et du nom du client.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{import_sale_order.png}
+    \caption{Pipeline import\_sale\_order — import avec status\_sequence et 12 FK}
+    \label{fig:pipeline-sale-order}
+\end{figure}
+
+\paragraph{Pipeline d'import des lignes de commande} Ce pipeline importe les lignes de commande. Il résout les FK vers la commande parente, le produit et l'unité. Un champ calculé \texttt{price\_discounted} applique la remise selon le type (pourcentage ou montant fixe) et recalcule les totaux HT et TTC. Après insertion, une jonction inline associe chaque ligne à sa taxe dans la table M2M.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{import_sale_order_line.png}
+    \caption{Pipeline import\_sale\_order\_line — lignes avec calcul de remise}
+    \label{fig:pipeline-sale-line}
+\end{figure}
+
+\paragraph{Pipeline de jonction lignes-taxes} Ce pipeline peuple la table de jonction entre les lignes de commande et les taxes applicables. Il lit un CSV dédié, résout la ligne de commande par import\_id, vérifie que le lookup a réussi, puis insère directement dans la table de jonction.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{import_sale_order_line_tax_set.png}
+    \caption{Pipeline import\_sale\_order\_line\_tax\_set — jonction lignes-taxes}
+    \label{fig:pipeline-sale-tax}
+\end{figure}
+
+\paragraph{Pipeline de calcul des totaux} Ce pipeline post-traitement calcule les totaux des commandes à partir des lignes. Il lit les lignes avec leurs taxes via une requête SQL, calcule les montants de taxe par groupe (commande + taux), insère un résumé dans la table des taxes, puis agrège les totaux (HT, TVA, TTC) et met à jour l'en-tête de commande.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{compute_sale_order_totals.png}
+    \caption{Pipeline compute\_sale\_order\_totals — calcul et mise à jour des totaux}
+    \label{fig:pipeline-sale-totals}
+\end{figure}
+
+\subsubsection{Entité Factures}
+
+Six pipelines orchestrés par le workflow \texttt{import\_invoices}. C'est l'entité de validation~: une facture ventilable prouve l'intégrité de toute la chaîne d'import.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{import_invoices.png}
+    \caption{Workflow import\_invoices}
+    \label{fig:workflow-invoices}
+\end{figure}
+
+\paragraph{Pipeline d'import des factures} — Insert-only avec 8 FK, blocking check (DBJoin), partner\_account conditionnel, journal par défaut, et champs calculés (\texttt{invoice\_id}, validation fields).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{import_invoice.png}
+    \caption{Pipeline import\_invoice}
+    \label{fig:pipeline-invoice}
+\end{figure}
+
+\paragraph{Pipeline d'import des lignes de facture} — Insert-only avec FK vers facture (+ extra\_returns société), produit, compte comptable (dual-key), unité. Script de calcul des totaux.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{import_invoice_line.png}
+    \caption{Pipeline import\_invoice\_line}
+    \label{fig:pipeline-invoice-line}
+\end{figure}
+
+\paragraph{Pipeline de jonction lignes-taxes (factures)} — Jonction M2M lignes-taxes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{import_invoice_line_tax_set.png}
+    \caption{Pipeline import\_invoice\_line\_tax\_set}
+    \label{fig:pipeline-invoice-tax-set}
+\end{figure}
+
+\paragraph{Pipeline de calcul des taxes par ligne} — Post-SQL reproduisant \texttt{TaxInvoiceLine.creates()}~: calcul taxe par ligne, détermination du compte d'imputation.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{compute_invoice_line_tax.png}
+    \caption{Pipeline compute\_invoice\_line\_tax}
+    \label{fig:pipeline-invoice-line-tax}
+\end{figure}
+
+\paragraph{Pipeline de calcul des totaux (factures)} — Agrégation HT/TVA/TTC et mise à jour de l'en-tête + montants restants.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{compute_invoice_totals.png}
+    \caption{Pipeline compute\_invoice\_totals}
+    \label{fig:pipeline-invoice-totals}
+\end{figure}
+
+\paragraph{Pipeline de génération des échéances} — Génération des échéances à partir des conditions de paiement (date + pourcentage du TTC).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{generate_invoice_terms.png}
+    \caption{Pipeline generate\_invoice\_terms}
+    \label{fig:pipeline-invoice-terms}
+\end{figure}
+
+\subsubsection{Rapports d'erreurs}
+
+Chaque pipeline génère automatiquement un rapport d'erreurs au format CSV dans le dossier \texttt{reports/}. Lorsqu'un enregistrement ne peut pas être importé (FK non résolue, import\_id manquant, valeur invalide), il est routé vers le fichier d'erreurs correspondant au lieu d'être silencieusement ignoré.
+
+Le rapport contient~: l'identifiant de l'enregistrement source, les champs pertinents (nom, code), et un message décrivant la cause de l'échec. Cela permet au consultant de corriger les données source et de relancer l'import — l'idempotence garantit que seuls les enregistrements corrigés seront réinsérés.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{products_errors.png}
+    \caption{Rapport d'erreurs produits — FK non résolues}
+    \label{fig:report-products}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{contact_link_errors.png}
+    \caption{Rapport d'erreurs contacts — partenaire parent introuvable}
+    \label{fig:report-contacts}
+\end{figure}
+
+%% ──────────────────────────────────────────────────────────────
+\subsection{Skills IA}
+
+Les skills IA sont des prompts structurés qui guident l'agent Claude à travers des tâches complexes. Ils sont organisés dans le dossier \texttt{.claude/commands/hop/}, chaque skill ayant son propre sous-dossier contenant un fichier principal (\texttt{.md}) et un dossier \texttt{reference/}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{skills-folder-structure.png}
+    \caption{Structure des dossiers des skills IA}
+    \label{fig:skills-structure}
+\end{figure}
+
+\subsubsection{Skill analyze-and-map-entity}
+
+Ce skill (476 lignes + 6 fichiers de référence) guide l'agent à travers l'analyse d'un CSV et la production d'un manifeste JSON. Les phases sont les suivantes~:
+
+\paragraph{Phase 0 — Connexion BD} L'agent teste immédiatement la connexion PostgreSQL avec les credentials fournis. Si la connexion réussit, toutes les vérifications FK suivantes se feront en interrogeant la base réelle. Sinon, l'agent passe en mode dégradé et se base uniquement sur les réponses de l'utilisateur.
+
+\paragraph{Phase 1 — Lecture et classification des colonnes} L'agent lit le CSV (headers + 20 premières lignes) et requête simultanément le schéma de la table cible via \texttt{information\_schema} (colonnes, types, contraintes FK). Il classifie ensuite chaque colonne en croisant trois signaux~:
+\begin{itemize}
+    \item \textbf{Notation pointée} (confiance élevée)~: \texttt{productFamily.importId} indique directement la table cible et la stratégie de lookup ;
+    \item \textbf{Pattern du nom} (confiance moyenne)~: un suffixe \texttt{Code}, \texttt{Id} ou \texttt{Name} suggère une FK ;
+    \item \textbf{Échantillonnage des valeurs} (corroboration)~: faible cardinalité, valeurs courtes et homogènes signalent une FK.
+\end{itemize}
+Pour les cas ambigus, l'agent pose une question à l'utilisateur avec des options prédéfinies.
+
+\paragraph{Phase 2 — Vérification en base} Pour chaque FK identifiée, l'agent exécute une requête SQL pour vérifier si les valeurs du CSV existent dans la table référencée. Il regroupe les FK par table de référence (ex~: \texttt{saleCurrency} et \texttt{purchaseCurrency} → une seule requête sur \texttt{base\_currency}). Trois résultats~: tout trouvé (preloaded), partiellement trouvé, ou rien trouvé.
+
+\paragraph{Phase 3 — Résolution interactive} Pour chaque FK avec des valeurs manquantes, l'agent demande la stratégie à l'utilisateur~:
+\begin{itemize}
+    \item \textbf{Fichier séparé}~: l'utilisateur fournit un CSV dédié (l'agent applique récursivement le même processus à ce fichier) ;
+    \item \textbf{Embedded (create automatically)}~: un pré-pipeline sera généré pour insérer les valeurs manquantes avant l'import principal ;
+    \item \textbf{Skip}~: le champ FK restera NULL.
+\end{itemize}
+
+\paragraph{Phase 4 — Confirmation} L'agent affiche un tableau récapitulatif de toutes les résolutions FK et demande confirmation avant de passer à l'écriture.
+
+\paragraph{Phase 5 — Écriture du manifeste} L'agent produit le fichier \texttt{manifest.json} v2.3 et l'écrit sur disque à l'emplacement choisi par l'utilisateur.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{analyze-and-map-skill.png}
+    \caption{Extrait du skill analyze-and-map-entity}
+    \label{fig:skill-analyze}
+\end{figure}
+
+\subsubsection{Le manifeste JSON — contrat entre analyse et génération}
+
+Le manifeste est le fichier intermédiaire qui formalise le résultat de l'analyse. Il contient toutes les informations nécessaires pour que le skill de génération puisse produire les pipelines sans ambiguïté. Pour le projet, quatre manifestes ont été produits (un par module)~:
+
+\begin{table}[H]
+  \centering
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{p{2.5cm} p{3cm} p{2cm} p{2cm} p{2cm}}
+    \toprule
+    \rowcolor{gray!20}
+    \textbf{Manifeste} & \textbf{Import order} & \textbf{FK} & \textbf{Colonnes} & \textbf{Mode} \\
+    \midrule
+    \rowcolor{gray!5}
+    product    & family → category → product  & 9  & 35 & upsert \\
+    partner    & address → partner            & 10 & 19 & mixte \\
+    \rowcolor{gray!5}
+    sale\_order & order → line                 & 16 & 37 & upsert \\
+    invoice    & invoice → line               & 12 & 32 & insert-only \\
+    \bottomrule
+  \end{tabular}
+  \caption{Résumé des 4 manifestes produits}
+  \label{tab:manifestes}
+\end{table}
+
+Chaque section d'entité dans le manifeste décrit~:
+\begin{itemize}
+    \item La table cible et le fichier source ;
+    \item Le mapping colonne par colonne (source CSV → colonne DB) ;
+    \item Les résolutions FK avec la stratégie de lookup et le comportement en cas d'absence ;
+    \item Les champs calculés, tables secondaires, et constantes d'insertion ;
+    \item L'ordre d'import respectant les dépendances entre entités.
+\end{itemize}
+
+C'est ce fichier que le skill \textit{generate-pipeline} consomme pour produire le XML Apache Hop. Sa structure est la suivante~:
+
+\begin{verbatim}
+{
+  "primary_entity": "product",
+  "import_order": ["product_family", "product_category", "product"],
+  "pre_pipelines": [...],
+  "entities": {
+    "product": {
+      "target_table": "base_product",
+      "pipeline_name": "csv_to_db_products",
+      "write_mode": "upsert",
+      "source": { "file": "datasets/product/products.csv", "delimiter": ";" },
+      "column_mappings": [
+        { "source": "name", "target": "name", "type": "string" },
+        { "source": "salePrice", "target": "sale_price", "type": "decimal" }
+      ],
+      "fk_resolutions": [
+        {
+          "source_column": "productFamily.importId",
+          "target_fk_field": "product_family_id",
+          "db_column": "product_family",
+          "ref_table": "base_product_family",
+          "strategies": ["by_import_id"],
+          "fk_source": "separate_entity",
+          "on_miss": "set_null"
+        }
+      ],
+      "computed_fields": [...],
+      "secondary_tables": [...],
+      "change_detection_fields": ["name", "code"],
+      "insert_constants": { "is_model": false }
+    }
+  }
+}
+\end{verbatim}
+
+Chaque champ guide directement la génération du pipeline~:
+\begin{itemize}
+    \item \texttt{write\_mode} détermine le pattern (upsert avec UPDATE, ou insert-only sans) ;
+    \item \texttt{column\_mappings} génère le bloc \texttt{Select Values} (renommage CSV → DB) et le \texttt{Table Output} ;
+    \item \texttt{fk\_resolutions} génère un \texttt{DB Lookup} par FK, avec la table, la clé et le comportement en cas d'absence ;
+    \item \texttt{change\_detection\_fields} génère le filtre ``has changes'' (comparaison avant/après pour l'UPDATE) ;
+    \item \texttt{import\_order} détermine l'enchaînement dans le workflow.
+\end{itemize}
+
+Le manifeste supporte également des patterns avancés~:
+
+\paragraph{Pattern embedded (création automatique de références manquantes)}
+Lorsqu'une colonne CSV contient directement le nom d'une référence (ex~: \texttt{unit = "Jour ouvré"}) au lieu d'un ID, le manifeste utilise \texttt{fk\_source: "embedded"} avec un bloc \texttt{pre\_pipeline\_config}~:
+
+\begin{verbatim}
+{
+  "source_column": "unit",
+  "ref_table": "base_unit",
+  "lookup_field": "name",
+  "fk_source": "embedded",
+  "pre_pipeline_config": {
+    "name": "create_missing_units",
+    "subdir": "product/units",
+    "sequence": "base_unit_seq"
+  }
+}
+\end{verbatim}
+
+Cela génère un pré-pipeline qui extrait les valeurs uniques du CSV, vérifie leur existence en base, et insère les manquantes avant l'import principal.
+
+\paragraph{Pattern parse\_config (adresses embarquées)}
+Pour les entités dont une colonne contient une adresse en texte libre (``70 RUE PASTORELLI | 06000 NICE | FRANCE''), le manifeste inclut un bloc \texttt{parse\_config} qui décrit le parsing~:
+
+\begin{verbatim}
+"parse_config": {
+  "type": "regex_split",
+  "source_field": "address",
+  "pattern": "^([^|]+)\\|\\s*(\\d+)\\s+([^|]+)\\|\\s*(.+)$",
+  "groups": [
+    { "name": "addr_street" },
+    { "name": "addr_zip" },
+    { "name": "addr_city" },
+    { "name": "addr_country" }
+  ],
+  "pre_dedup": { "sort_field": "address", "unique_field": "address" }
+}
+\end{verbatim}
+
+Cela génère un pipeline insert-only avec~: tri + déduplication, RegexEval pour splitter l'adresse, puis insertion.
+
+\paragraph{Pattern junction\_pipelines (tables M2M)}
+Les relations Many-to-Many sont décrites au niveau racine du manifeste dans \texttt{junction\_pipelines[]}~:
+
+\begin{verbatim}
+"junction_pipelines": [{
+  "name": "link_partner_address",
+  "source": { "file": "datasets/partners/partnerAddresses.csv" },
+  "side_a": { "csv_column": "partner_importId", "ref_table": "base_partner" },
+  "side_b": { "csv_column": "address_importId", "ref_table": "base_address" },
+  "junction_table": "base_partner_address",
+  "sequence": "base_partner_address_seq"
+}]
+\end{verbatim}
+
+Cela génère un pipeline qui résout les deux côtés par lookup, vérifie l'absence de doublon (idempotence), puis insère dans la table de jonction.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{extrait-manifest.png}
+    \caption{Extrait d'un manifeste JSON — section FK resolutions}
+    \label{fig:extrait-manifest}
+\end{figure}
+
+\subsubsection{Skill generate-pipeline}
+
+Ce skill (1891 lignes + 3 fichiers de référence) transforme un manifeste JSON en fichiers XML Apache Hop. Il opère en cinq étapes~:
+
+\begin{enumerate}
+    \item \textbf{Step 0 — Chemins~:} demande à l'utilisateur le chemin du manifeste et le répertoire de sortie pour les fichiers générés.
+    \item \textbf{Step 1 — Lecture du manifeste~:} extrait \texttt{import\_order}, les sections entité (table cible, colonnes, FK, champs calculés), ainsi que les \texttt{junction\_pipelines} et \texttt{post\_pipelines}.
+    \item \textbf{Step 2 — Lecture des références~:} lit les pipelines de référence existants pour reproduire la structure XML exacte. Trois fichiers de référence fournissent les blocs XML pour chaque type de transform, les conventions critiques (ex~: \texttt{Constant} met la valeur dans \texttt{<nullif>}, pas \texttt{<value>}), et l'architecture standard des chaînes de transforms.
+    \item \textbf{Step 3 — Génération~:} pour chaque entité dans \texttt{import\_order}, génère un \texttt{.hpl} en appliquant le pattern approprié~:
+    \begin{itemize}
+        \item \textbf{Upsert}~: CSV → Select Values → Filter → FK Lookups → Self-lookup → Filter is new → INSERT/UPDATE ;
+        \item \textbf{Insert-only}~: CSV → Filter → FK Lookups → Idempotency check → INSERT ;
+        \item \textbf{Junction}~: CSV → Lookup side A → Lookup side B → Idempotency check → INSERT jonction ;
+        \item \textbf{Post-SQL}~: RowGenerator → ExecSQL (requête SQL directe).
+    \end{itemize}
+    \item \textbf{Step 5 — Vérification~:} confirme que chaque fichier est du XML valide et rapporte le nombre de fichiers générés.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{generate-pipelines-skill.png}
+    \caption{Extrait du skill generate-pipeline}
+    \label{fig:skill-generate}
+\end{figure}
+
+\subsubsection{Skill generate-workflow}
+
+Ce skill (289 lignes + 1 fichier de référence) produit le workflow orchestrateur (\texttt{.hwf}) à partir du manifeste. Il enchaîne les actions dans cet ordre~:
+
+\begin{enumerate}
+    \item \textbf{Preflight checks~:} vérification de l'existence du fichier CSV source et test de la connexion BD. En cas d'échec → Abort.
+    \item \textbf{Pré-pipelines~:} exécute les pipelines de création de références manquantes (ex~: \texttt{create\_missing\_units}) identifiés par les FK avec \texttt{fk\_source: "embedded"}.
+    \item \textbf{Import order~:} exécute séquentiellement chaque pipeline d'entité dans l'ordre topologique. Échec → Abort.
+    \item \textbf{Post-pipelines~:} exécute les pipelines de calcul (totaux, taxes, champs dérivés).
+    \item \textbf{Junction pipelines~:} exécute les pipelines de liaison M2M.
+    \item \textbf{Success~:} action finale si tout a réussi.
+\end{enumerate}
+
+Le skill lit deux workflows de référence (v2) pour reproduire le format XML exact, et génère un fichier \texttt{import\_<primary\_entity>.hwf}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{generate-workflow-skill.png}
+    \caption{Extrait du skill generate-workflow}
+    \label{fig:skill-workflow}
+\end{figure}
+
+\subsubsection{Méthode d'amélioration itérative — Perfect Output}
+
+Après la rédaction initiale des skills, une phase d'amélioration itérative a été appliquée pour augmenter leur fiabilité. La méthode consiste à~:
+
+\begin{enumerate}
+    \item \textbf{Créer un dataset de test}~: un jeu de données CSV couvrant les cas de figure à vérifier.
+    \item \textbf{Créer manuellement les pipelines et le manifeste de référence}~: ce sont les résultats attendus pour ce dataset.
+    \item \textbf{Exécuter le skill}~: lancer l'agent sur le dataset et comparer sa sortie avec la référence.
+    \item \textbf{Identifier les écarts}~: chaque différence entre la sortie de l'agent et la référence constitue un défaut du skill.
+    \item \textbf{Corriger le skill}~: ajouter les règles, conventions ou exemples manquants dans le prompt ou les fichiers de référence.
+    \item \textbf{Itérer}~: relancer jusqu'à convergence (sortie = référence).
+\end{enumerate}
+
+Cette boucle a permis de découvrir et documenter de nombreuses conventions non évidentes du XML Apache Hop. À chaque itération, les corrections apportées au skill sont vérifiées manuellement pour s'assurer qu'elles restent généralisables et ne sur-optimisent pas pour un cas particulier (overfitting).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{perfect-output-loop.png}
+    \caption{Boucle d'amélioration itérative des skills (Perfect Output)}
+    \label{fig:perfect-output}
+\end{figure}
+
+%% ──────────────────────────────────────────────────────────────
+\subsection{Application Axelor Mapper}
+
+L'application Axelor Mapper est l'interface web qui encapsule l'ensemble du processus d'import. Elle se compose d'un backend FastAPI (Python) et d'un frontend React avec un terminal embarqué (xterm.js).
+
+\subsubsection{Page d'accueil — Sélection de l'entité}
+
+L'utilisateur choisit l'entité cible (produit, partenaire, commande, facture) et saisit les credentials de la base de données PostgreSQL.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{axelor-mapper-landing-page.png}
+    \caption{Page d'accueil — sélection de l'entité et credentials BD}
+    \label{fig:mapper-landing}
+\end{figure}
+
+\subsubsection{Session conversationnelle — Terminal Claude}
+
+Une fois la session démarrée, un terminal s'ouvre dans le navigateur. L'agent Claude analyse le CSV, pose des questions sur les FK, et demande à l'utilisateur de déposer les fichiers source.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{screenshot-demander-de-drop-le-fichier-source.png}
+    \caption{L'agent demande à l'utilisateur de déposer le fichier CSV}
+    \label{fig:mapper-drop}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{screenshot-demander-de-confirmation-de-resolution-FK.png}
+    \caption{L'agent demande confirmation de la résolution des FK}
+    \label{fig:mapper-fk}
+\end{figure}
+
+\subsubsection{Génération du manifeste}
+
+L'agent demande le chemin de sortie puis écrit le manifeste JSON.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{screenshot-demander-path-creation-manifest.png}
+    \caption{L'agent demande où écrire le manifeste}
+    \label{fig:mapper-manifest-path}
+\end{figure}
+
+\subsubsection{Review du manifeste}
+
+Une fois le manifeste créé, un bouton ``Review Manifest'' apparaît. L'utilisateur peut consulter le mapping proposé avant de passer à la génération.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{axelor-mapper-review-manifest.png}
+    \caption{Modal de review du manifeste}
+    \label{fig:mapper-review}
+\end{figure}
+
+\subsubsection{Génération des pipelines}
+
+Après validation du manifeste, l'utilisateur peut lancer la génération des pipelines en spécifiant les chemins (manifeste, données, sortie).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{screenshot-succes-generation-pipelines.png}
+    \caption{Génération réussie des pipelines}
+    \label{fig:mapper-generate}
+\end{figure}
+
+%% ============================================================
+\section*{Conclusion}
+%% ============================================================
+
+Ce chapitre a présenté l'environnement de développement et l'implémentation des quatre modules d'import (19 pipelines), des 3 skills IA, et de l'application Axelor Mapper. Chaque module suit des patterns adaptés à sa complexité. Le chapitre suivant présente les résultats obtenus et la validation du système.

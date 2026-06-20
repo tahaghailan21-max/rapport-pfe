@@ -1,0 +1,165 @@
+% !BIB program = biber
+% !TeX program = xelatex
+\documentclass[12pt, a4paper, twoside, openany]{report}
+
+% ── Encodage (XeLaTeX) ──────────────────────────────────────
+\usepackage{fontspec}
+\setmainfont{Carlito}
+\setsansfont{Carlito}
+\renewcommand{\familydefault}{\sfdefault}
+
+% ── Mise en page (charte ENSA) ──────────────────────────────
+\usepackage[a4paper,
+            top=2.5cm, bottom=2.5cm,
+            left=2.5cm, right=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+% ── Couleurs ────────────────────────────────────────────────
+\usepackage[table]{xcolor}
+\definecolor{titreBleu}{HTML}{1034A6}
+\definecolor{headerBleu}{HTML}{D6E4F0}
+\definecolor{rowGris}{HTML}{D0D0D0}
+\definecolor{borderGris}{HTML}{BBBBBB}
+
+% ── Figures et tableaux ─────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{colortbl}
+
+% ── Numérotation figures/tableaux/équations par chapitre ────
+\usepackage{chngcntr}
+\counterwithin{figure}{chapter}
+\counterwithin{table}{chapter}
+\counterwithin{equation}{chapter}
+
+% ── Mathématiques ───────────────────────────────────────────
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% ── Code source ─────────────────────────────────────────────
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red!70!black},
+}
+
+% ── Diagrammes et planning ──────────────────────────────────
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, fit, positioning, shapes.geometric, shapes.multipart, calc}
+\usepackage{pgfgantt}
+\usepackage[edges]{forest}
+\usepackage[most]{tcolorbox}
+
+% ── En-têtes et pieds de page (charte) ──────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{%
+  \begin{tikzpicture}[baseline=-0.5ex]
+    \node[inner sep=0, opacity=0.5]
+      {\includegraphics[height=0.75cm]{logo-ensa.png}};
+  \end{tikzpicture}%
+}
+\fancyhead[R]{\small\color{titreBleu}\itshape
+  Framework ETL \`a Gateways de D\'ecision pour l'Import ERP Axelor}
+\fancyfoot[L]{\small ENSA K\'enitra, Fili\`ere G\'enie Informatique}
+\fancyfoot[R]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{28pt}
+\addtolength{\topmargin}{-14pt}
+
+% ── Titres de chapitres : package chargé ici, formats définis après bidi ──
+\usepackage{titlesec}
+
+\raggedbottom
+
+% ── Liens internes ──────────────────────────────────────────
+\usepackage[hidelinks]{hyperref}
+
+% ── Bibliographie style IEEE ─────────────────────────────────
+\usepackage[backend=biber, style=ieee, sorting=none, defernumbers=true]{biblatex}
+\addbibresource{bibliographie.bib}
+
+\graphicspath{{images/}}
+
+% ── Polyglossia + arabe (charge bidi qui patche titlesec) ───
+\usepackage{polyglossia}
+\setmainlanguage{french}
+\setotherlanguage[calendar=gregorian]{arabic}
+\newfontfamily\arabicfont[Script=Arabic, Scale=1.2]{Amiri}
+\newfontfamily\arabicfontsf[Script=Arabic, Scale=1.2]{Amiri}
+\newfontfamily\arabicfonttt[Script=Arabic, Scale=1.2]{Amiri}
+
+% ── Formats de titres définis APRÈS bidi pour qu'ils ne soient pas écrasés ──
+\titleformat{\chapter}[block]
+  {\normalfont\fontsize{16}{19}\bfseries\sffamily\color{titreBleu}}
+  {Chapitre \thechapter}{1em}{}
+\titleformat{name=\chapter,numberless}[block]
+  {\normalfont\fontsize{16}{19}\bfseries\sffamily\color{titreBleu}}
+  {}{0pt}{}
+\titlespacing*{\chapter}{0pt}{0pt}{12pt}
+\titleformat{\section}{\large\bfseries\sffamily\color{titreBleu}}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries\sffamily\color{titreBleu}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\sffamily\color{titreBleu}}{\thesubsubsection}{1em}{}
+
+\begin{document}
+
+% ── Page de garde (sans numérotation) ───────────────────────
+\pagestyle{empty}
+\input{front/page_garde}
+
+% ── Pages préliminaires (numérotation romaine) ──────────────
+\pagestyle{fancy}
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+\include{chapters/dedicace}
+\include{chapters/remerciements}
+\include{chapters/resume}
+\include{chapters/abstract}
+\include{chapters/resume-ar}
+\include{chapters/abreviations}
+
+\listoffigures
+\clearpage
+
+\listoftables
+\clearpage
+
+\tableofcontents
+\clearpage
+
+% ── Corps du rapport (numérotation arabe) ───────────────────
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\include{chapters/introduction}
+\include{chapters/chap-1-contexte}
+\include{chapters/chap-2-conception}
+\include{chapters/chap-3-realisation}
+\include{chapters/chap-4-conception-fonctionnelle}
+\include{chapters/chap-5-architecture}
+\include{chapters/chap-6-implementation}
+\include{chapters/chap-7-resultats}
+\include{chapters/conclusion}
+
+% ── Bibliographie ───────────────────────────────────────────
+\printbibliography[heading=bibintoc, title={R\'ef\'erences}, nottype=misc]
+\printbibliography[heading=bibintoc, title={Webographie}, type=misc]
+
+\end{document}

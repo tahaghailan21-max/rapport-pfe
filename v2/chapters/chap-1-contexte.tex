@@ -1,0 +1,184 @@
+\chapter{Contexte général du projet}
+\label{chap:contexte}
+
+Ce premier chapitre a pour objectif de situer le cadre général dans lequel s'inscrit notre projet de fin d'études. Nous commençons par présenter l'organisme d'accueil, puis nous exposons le contexte et la problématique qui ont motivé ce travail, avant de détailler l'organisation adoptée pour sa réalisation.
+
+%% ─────────────────────────────────────────────
+\section{Présentation de l'organisme d'accueil}
+\label{sec:organisme}
+%% ─────────────────────────────────────────────
+
+\subsection{Fiche technique}
+
+\begin{table}[H]
+  \centering
+  \renewcommand{\arraystretch}{1.5}
+  \begin{tabular}{p{4.5cm} p{9.5cm}}
+    \toprule
+    \rowcolor{gray!20}
+    \textbf{Champ} & \textbf{Information} \\
+    \midrule
+    \rowcolor{gray!5}
+    \textbf{Raison sociale}     & Axelor SAS \\
+    \textbf{Date de création}   & 2005 \\
+    \rowcolor{gray!5}
+    \textbf{PDG}                & Laith Jubair \\
+    \textbf{Siège social}       & Marne-la-Vallée, France \\
+    \rowcolor{gray!5}
+    \textbf{Secteur d'activité} & Édition de logiciels ERP/CRM/BPM \\
+    \textbf{Filiales}           & Inde, Maroc, Canada \\
+    \rowcolor{gray!5}
+    \textbf{Produits phares}    & Axelor Open Platform (AOP), Axelor Open Suite (AOS) \\
+    \textbf{Licence}            & Open Source (AGPLv3) \\
+    \rowcolor{gray!5}
+    \textbf{Site web}           & \url{https://www.axelor.com/} \\
+    \bottomrule
+  \end{tabular}
+  \caption{Fiche technique d'Axelor}
+  \label{tab:fiche-technique}
+\end{table}
+
+\subsection{Présentation générale}
+
+Axelor est un éditeur français de logiciels open source spécialisé dans les solutions ERP, CRM et BPM. Fondée en 2005 et dirigée par Laith Jubair (PDG), l'entreprise propose une plateforme complète permettant aux organisations de digitaliser et d'optimiser l'ensemble de leurs processus métier. Axelor se distingue par son approche open source et sa philosophie low-code, rendant ses solutions accessibles à un large éventail d'entreprises~\cite{axelor_erp}.
+
+Implantée dans quatre pays, Axelor dispose de 7 sites en France (siège social), au Maroc, au Canada et en Inde.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{Siege-Axelor.png}
+  \caption{Implantations géographiques d'Axelor dans le monde}
+  \label{fig:siege-axelor}
+\end{figure}
+
+\subsection{Secteur d'activité}
+
+Axelor évolue dans le secteur de l'édition de logiciels de gestion d'entreprise. Son cœur de métier couvre trois domaines complémentaires :
+\begin{itemize}
+    \item \textbf{ERP} — Progiciel de Gestion Intégré couvrant la comptabilité, les achats, les ventes, la production et les stocks ;
+    \item \textbf{CRM} — Gestion de la Relation Client pour le suivi commercial et marketing ;
+    \item \textbf{BPM} — Gestion des Processus Métier pour la modélisation et l'automatisation des workflows.
+\end{itemize}
+
+\subsection{Structure et organisation}
+
+L'organigramme de la filiale Axelor Maroc illustre une structure hiérarchique claire. Sous la direction générale, l'organisation s'articule autour d'un directeur de projet supervisant les chefs de projet, lesquels encadrent les consultants fonctionnels et les ingénieurs R\&D. Une responsable des ressources humaines complète cette structure. Cette organisation permet une coordination efficace entre les équipes techniques et fonctionnelles pour la livraison des projets d'intégration ERP.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{organigramme-axelor-maroc.png}
+  \caption{Organigramme d'Axelor Maroc}
+  \label{fig:organigramme-axelor}
+\end{figure}
+
+\subsection{Stack technique}
+
+La plateforme Axelor repose sur une architecture multi-couches s'appuyant sur des technologies éprouvées :
+
+\begin{itemize}
+    \item \textbf{Interface utilisateur} — React pour le frontend web moderne et réactif ;
+    \item \textbf{Web Services} — RESTEasy pour l'exposition d'API RESTful ;
+    \item \textbf{Sécurité} — Apache Shiro pour l'authentification et le contrôle d'accès ;
+    \item \textbf{Reporting / BI} — BIRT pour la génération de rapports et tableaux de bord ;
+    \item \textbf{Processus} — Camunda pour la modélisation et l'exécution des workflows BPM ;
+    \item \textbf{Modules métier} — Java pour la logique applicative ;
+    \item \textbf{ORM} — Hibernate pour la persistance objet-relationnelle~\cite{hibernate2024} ;
+    \item \textbf{Base de données} — PostgreSQL comme SGBD relationnel~\cite{postgresql_doc}.
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{stack-technique.png}
+  \caption{Stack technique de la plateforme Axelor}
+  \label{fig:stack-technique}
+\end{figure}
+
+\subsection{Produits}
+
+L'offre d'Axelor s'articule autour de deux composantes principales :
+
+\begin{itemize}
+    \item \textbf{Axelor Open Platform (AOP)} — Une plateforme low-code permettant de développer rapidement des applications métier grâce à un système de description déclarative (XML) et à un moteur de vues dynamiques ;
+    \item \textbf{Axelor Open Suite (AOS)} — Un ensemble de plus de 30 applications métier intégrées construites sur AOP, couvrant la comptabilité, la gestion commerciale, les ressources humaines, la production, la supply chain, et bien d'autres domaines.
+\end{itemize}
+
+\subsection{Clients}
+
+Axelor accompagne une clientèle diversifiée, allant des PME aux grands groupes internationaux, dans des secteurs tels que l'industrie, l'énergie, le e-commerce et le secteur public. Parmi les références notables figurent \textbf{Thyssenkrupp}, \textbf{Stellantis}, \textbf{Cdiscount}, \textbf{Trenitalia}, \textbf{Enercoop}, \textbf{Carbone~4}, ainsi que des institutions publiques comme le \textbf{Ministère de la Justice} et le \textbf{Conseil départemental des Hauts-de-Seine}. L'écosystème Axelor compte aujourd'hui plus d'un million d'utilisateurs à travers le monde.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{axelor-clients1.png}\\[0.3cm]
+  \includegraphics[width=0.9\textwidth]{axelor-clients2.png}
+  \caption{Principaux clients d'Axelor}
+  \label{fig:clients-axelor}
+\end{figure}
+
+%% ─────────────────────────────────────────────
+\section{Contexte et enjeux du projet}
+\label{sec:contexte-enjeux}
+%% ─────────────────────────────────────────────
+
+Axelor accompagne ses clients — PME, ETI et grands groupes — dans la mise en place de son ERP open source. Ces clients évoluent dans des secteurs variés (industrie, services, énergie, e-commerce) et disposent chacun de données historiques issues de systèmes d'information hétérogènes : anciens ERP, fichiers Excel, bases de données propriétaires ou exports CSV manuels.
+
+Lors de chaque nouveau déploiement, la phase de \textbf{migration de données} constitue une étape incontournable et critique. Elle conditionne la mise en production de l'ERP car le client ne peut basculer vers Axelor qu'une fois l'intégralité de ses données de référence (produits, clients, fournisseurs, historiques de commandes et de factures) importée et vérifiée dans le nouveau système.
+
+Aujourd'hui, cette migration repose sur le développement de \textbf{scripts Java spécifiques} pour chaque projet. L'équipe d'intégration développe en moyenne plus de 20 scripts par client, chacun dédié à l'import d'une entité métier donnée. Ces scripts interagissent avec l'API REST d'Axelor ou écrivent directement en base.
+
+Cette approche pose plusieurs \textbf{enjeux stratégiques} pour Axelor :
+\begin{itemize}
+    \item \textbf{Coût élevé par projet} — le développement de scripts sur mesure mobilise des ressources d'ingénierie significatives, allongeant le délai de mise en production ;
+    \item \textbf{Absence de capitalisation} — les scripts d'un projet ne sont pas réutilisables sur le suivant, même lorsque les structures de données sont similaires ;
+    \item \textbf{Dépendance à un profil technique} — seuls les développeurs Java maîtrisant le modèle de données AOS peuvent réaliser ces imports, créant un goulot d'étranglement ;
+    \item \textbf{Frein à la scalabilité} — avec la croissance du nombre de clients, cette approche artisanale ne passe pas à l'échelle.
+\end{itemize}
+
+%% ─────────────────────────────────────────────
+\section{Présentation du projet}
+\label{sec:presentation-projet}
+%% ─────────────────────────────────────────────
+
+Ce projet de fin d'études vise à concevoir et développer un framework ETL générique, assisté par intelligence artificielle, pour automatiser l'import de données vers Axelor Open Suite. Le framework couvre quatre domaines fonctionnels de complexité croissante (produits, partenaires, commandes de vente, factures) et intègre une application web permettant aux consultants de configurer les imports sans compétence Java.
+
+Le stagiaire est intégré dans l'équipe R\&D d'Axelor Maroc en tant qu'ingénieur R\&D, sous l'encadrement technique quotidien de M.~Abderrahim Aabane et la supervision projet de M.~Pierre Couderc. Il est responsable de l'intégralité du cycle de développement : conception, implémentation, tests et validation du framework.
+
+%% ─────────────────────────────────────────────
+\section{Déroulement du stage}
+\label{sec:deroulement}
+%% ─────────────────────────────────────────────
+
+Le stage s'est déroulé du \textbf{16 février 2026} au \textbf{31 juillet 2026} au sein de l'équipe R\&D d'\textit{Axelor Maroc}.
+Le tableau~\ref{tab:deroulement} présente les principales phases du stage dans l'ordre chronologique.
+
+\begin{table}[H]
+  \centering
+  \renewcommand{\arraystretch}{1.5}
+  \begin{tabular}{p{3.5cm} p{3.5cm} p{7cm}}
+    \toprule
+    \rowcolor{gray!20}
+    \textbf{Période} & \textbf{Phase} & \textbf{Activités principales} \\
+    \midrule
+    \rowcolor{gray!5}
+    Semaines 1--6    & Formation technique   & Formation sur le framework AOP (Axelor Open Platform), architecture modulaire, mécanismes d'import \\
+    \midrule
+    \multicolumn{3}{l}{\textit{À partir de la semaine 7, répartition 50\% PFE / 50\% projets clients Axelor}} \\
+    \midrule
+    \rowcolor{gray!5}
+    Semaines 7--10   & Pipelines ETL         & Conception et création des pipelines Apache Hop pour les 4 entités principales \\
+    Semaines 11--14  & Application Mapper    & Développement de l'application Axelor Mapper (backend + frontend + agent IA) \\
+    \rowcolor{gray!5}
+    Semaines 15--18  & Skills IA             & Développement des skills Claude (analyse, mapping, génération de pipelines) \\
+    Semaines 19--20  & Tests \& validation   & Tests end-to-end, validation sur un golden dataset \\
+    \bottomrule
+  \end{tabular}
+  \caption{Déroulement chronologique du stage}
+  \label{tab:deroulement}
+\end{table}
+
+\textit{Note :} À partir de la semaine 7, le travail sur le projet PFE s'est effectué en parallèle d'une activité d'intégration sur des projets clients Axelor (50\% du temps sur chaque volet).
+
+%% ─────────────────────────────────────────────
+\section*{Conclusion}
+%% ─────────────────────────────────────────────
+
+Ce chapitre a présenté l'organisme d'accueil Axelor, son secteur d'activité et son organisation, avant d'exposer le contexte et les enjeux de la migration de données ERP. Nous avons ensuite introduit le projet et ses objectifs, ainsi que le déroulement du stage. Le chapitre suivant formule la problématique de manière détaillée et présente la solution proposée.

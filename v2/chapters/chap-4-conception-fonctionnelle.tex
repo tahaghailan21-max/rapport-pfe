@@ -1,0 +1,116 @@
+\chapter{Conception fonctionnelle}
+\label{chap:conception-fonctionnelle}
+
+Ce chapitre présente la modélisation du système AOS-ETL à l'aide de diagrammes UML. Il comprend un diagramme de cas d'utilisation décrivant les acteurs principaux et leurs interactions avec le système, des diagrammes de séquence détaillant les processus clés, ainsi qu'un diagramme de classes représentant les entités fondamentales et leurs relations.
+
+%% ============================================================
+\section{Modélisation du système}
+\label{sec:modelisation}
+%% ============================================================
+
+\subsection{Définition d'UML}
+
+Le langage de modélisation unifié (UML) est un langage visuel standardisé utilisé pour spécifier, visualiser, construire et documenter les systèmes logiciels. Il permet de comprendre clairement la structure et le comportement d'un système, réduisant les ambiguïtés et assurant la cohérence tout au long du projet~\cite{uml}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{uml.jpeg}
+    \caption{Les différents types de diagrammes UML}
+    \label{fig:uml-types}
+\end{figure}
+
+\subsection{Diagramme de cas d'utilisation}
+
+Le diagramme de cas d'utilisation ci-dessous présente les acteurs du système et leurs interactions principales avec le framework AOS-ETL.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth, trim=0 240 0 40, clip]{phase-mapping-use-case.pdf}
+    \caption{Diagramme de cas d'utilisation — Phase Mapping}
+    \label{fig:use-case-mapping}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth, trim=0 400 0 40, clip]{post-mapping-use-case.pdf}
+    \caption{Diagramme de cas d'utilisation — Phase Post-mapping}
+    \label{fig:use-case-post-mapping}
+\end{figure}
+
+Les acteurs identifiés sont~:
+\begin{itemize}
+    \item \textbf{Responsable d'intégration~:} utilisateur principal qui upload les fichiers CSV, interagit avec l'agent de mapping, lance la génération des pipelines et l'exécution des imports ;
+    \item \textbf{Agent IA (Claude)~:} acteur secondaire qui analyse les CSV, résout les dépendances FK, génère les manifestes et les pipelines.
+\end{itemize}
+
+\subsection{Raffinement des cas d'utilisation}
+
+Le tableau~\ref{tab:raffinement} détaille les actions possibles par acteur.
+
+\begin{table}[H]
+  \centering
+  \renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{p{3.5cm} p{4cm} p{6cm}}
+    \toprule
+    \rowcolor{gray!20}
+    \textbf{Acteur} & \textbf{Action} & \textbf{Description} \\
+    \midrule
+    \rowcolor{gray!5}
+    Responsable d'intégration & Démarrer une session & Choisit l'entité cible et configure la connexion BD \\
+    Responsable d'intégration & Déposer des fichiers CSV & Upload un ou plusieurs fichiers dans la session \\
+    \rowcolor{gray!5}
+    Responsable d'intégration & Résoudre les FK & Répond aux questions de l'agent sur les ambiguïtés \\
+    Responsable d'intégration & Consulter les fichiers & Vérifie les fichiers déposés dans la session \\
+    \rowcolor{gray!5}
+    Responsable d'intégration & Consulter le manifest & Revue du mapping proposé par l'agent \\
+    Responsable d'intégration & Générer les pipelines & Lance la génération avec paramètres (paths, contexte) \\
+    \rowcolor{gray!5}
+    Responsable d'intégration & Exécuter le workflow & Lance l'import via hop-run.sh \\
+    Responsable d'intégration & Consulter les résultats & Vérifie les lignes importées et les erreurs \\
+    \midrule
+    \rowcolor{gray!5}
+    Agent IA (Claude) & Analyser le CSV & Profile les colonnes, détecte les types et FK \\
+    Agent IA (Claude) & Résoudre les FK & Vérifie en BD l'existence des valeurs référencées \\
+    \rowcolor{gray!5}
+    Agent IA (Claude) & Produire le manifest & Écrit le fichier manifest.json \\
+    Agent IA (Claude) & Générer les pipelines & Produit les fichiers .hpl/.hwf \\
+    \bottomrule
+  \end{tabular}
+  \caption{Raffinement des cas d'utilisation}
+  \label{tab:raffinement}
+\end{table}
+
+\subsection{Diagrammes de séquence}
+
+\subsubsection{Séquence — Phase Mapping}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{uml-sequence-mapping.png}
+    \caption{Diagramme de séquence — session de mapping via l'agent IA}
+    \label{fig:seq-mapping}
+\end{figure}
+
+\subsubsection{Séquence — Phase Post-mapping}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{uml-sequence-postmapping.png}
+    \caption{Diagramme de séquence — génération et exécution des pipelines}
+    \label{fig:seq-postmapping}
+\end{figure}
+
+\subsection{Diagramme de classes}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{uml-class-diagram.png}
+    \caption{Diagramme de classes du framework AOS-ETL}
+    \label{fig:class-diagram}
+\end{figure}
+
+%% ============================================================
+\section*{Conclusion}
+%% ============================================================
+
+Ce chapitre a présenté la conception fonctionnelle du système à travers les diagrammes UML. Les cas d'utilisation ont permis d'identifier les interactions entre le responsable d'intégration et le système, les diagrammes de séquence ont détaillé les flux principaux, et le diagramme de classes a formalisé les entités clés du framework. Le chapitre suivant aborde l'architecture technique de la solution.

@@ -1,0 +1,30 @@
+\chapter*{Introduction Générale}
+\addcontentsline{toc}{chapter}{Introduction Générale}
+\markboth{Introduction Générale}{Introduction Générale}
+
+\vspace{0.5cm}
+
+Dans un contexte économique en perpétuelle évolution, les entreprises sont confrontées à une pression croissante liée à la digitalisation de leurs processus. Les systèmes ERP (Enterprise Resource Planning) occupent une place centrale dans cette transformation, en centralisant l'ensemble des processus métier au sein d'un système unique et cohérent. Cependant, le déploiement d'un ERP soulève invariablement une problématique critique : la migration des données historiques depuis les systèmes legacy du client.
+
+C'est dans ce contexte que s'inscrit ce projet de fin d'études, réalisé au sein d'\textit{Axelor}, éditeur français d'une plateforme ERP-CRM-BPM open source. Face à la multiplication des projets clients et à la complexité croissante des données à migrer, Axelor fait face à une limitation structurelle : chaque déploiement nécessite le développement de scripts Java sur mesure, non réutilisables et difficiles à maintenir.
+
+L'objectif principal de ce stage est de concevoir et développer un \textbf{framework ETL générique à gateways de décision}, basé sur Apache Hop, capable de formaliser les règles métier d'Axelor en transformations déclaratives et réutilisables. Plus précisément, le projet vise à :
+
+\begin{itemize}
+  \item \textbf{Standardiser} le processus d'import de données en remplaçant les scripts Java ad hoc par des pipelines ETL paramétrables et versionnables ;
+  \item \textbf{Couvrir} quatre domaines fonctionnels de complexité croissante : produits, partenaires, commandes de vente et factures ;
+  \item \textbf{Automatiser} les phases de configuration et de génération de pipelines via des skills IA spécialisées (agents génératifs) ;
+  \item \textbf{Développer} une application web (\textit{Axelor Mapper}) offrant une interface conversationnelle entre le consultant et l'agent IA pour le mapping des données.
+\end{itemize}
+
+Ce mémoire est structuré en sept chapitres :
+
+\begin{itemize}
+  \item \textbf{Chapitre 1} présente l'organisme d'accueil Axelor et le déroulement du stage.
+  \item \textbf{Chapitre 2} expose le contexte du projet, la problématique et l'organisation du travail.
+  \item \textbf{Chapitre 3} formalise le cadrage du besoin, les exigences fonctionnelles et non fonctionnelles, la méthodologie adoptée et le planning de réalisation.
+  \item \textbf{Chapitre 4} présente la conception fonctionnelle à travers les diagrammes UML.
+  \item \textbf{Chapitre 5} détaille l'architecture technique, le benchmark des technologies et les choix retenus.
+  \item \textbf{Chapitre 6} décrit l'implémentation des pipelines ETL, des skills IA et de l'application Axelor Mapper.
+  \item \textbf{Chapitre 7} présente les résultats obtenus, les tests de validation et le bilan du projet.
+\end{itemize}

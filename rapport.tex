@@ -1,0 +1,962 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{geometry}
+\geometry{top=1cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+\usepackage{lmodern}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{float}
+
+\definecolor{headerblue}{HTML}{86aee2}
+\definecolor{schoolblue}{HTML}{232b72}
+\definecolor{placeholderbg}{HTML}{f0f0f0}
+\definecolor{placeholderborder}{HTML}{aaaaaa}
+
+%----------- Commande placeholder figure -----------
+% Usage : \insertfig[largeur]{note interne}{légende}
+\newcommand{\insertfig}[3][0.80]{%
+  \begin{figure}[H]
+  \centering
+  \colorbox{placeholderbg}{\parbox{#1\textwidth}{%
+    \vspace{1.6cm}
+    \centering
+    {\large\color{placeholderborder}\textbf{[ Figure à insérer ]}}\\[0.5cm]
+    {\small\color{gray}\textit{#2}}%
+    \vspace{1.6cm}
+  }}
+  \caption{#3}
+  \end{figure}
+}
+
+\newcommand{\fullwidthbar}[2][headerblue]{%
+  \noindent
+  \hspace*{-2.5cm}%
+  \colorbox{#1}{%
+    \parbox{\paperwidth}{%
+      \centering\vspace{0.65cm}%
+      {\large\bfseries\color{white}#2}%
+      \vspace{0.65cm}%
+    }%
+  }%
+}
+
+\begin{document}
+
+%================= PAGE DE GARDE =================
+\begin{titlepage}
+
+%================= LOGOS EN HAUT =================
+\begin{minipage}[t]{0.5\textwidth}
+    \includegraphics[width=0.45\textwidth]{logos/logo-ibn-tofail.png}\\[0.2cm]
+    {\small\color{schoolblue}\textbf{École Nationale des Sciences}\\\textbf{Appliquées Kénitra}}
+\end{minipage}%
+\begin{minipage}[t]{0.5\textwidth}
+    \raggedleft
+    \includegraphics[width=0.45\textwidth]{logos/logo_axelor.png}
+\end{minipage}
+
+\vspace{0.4cm}
+
+%================= RECTANGLE BLEU PLEINE LARGEUR =================
+\fullwidthbar[headerblue]{Rapport de Projet de Fin d'Études}
+
+\vspace{0.6cm}
+
+%================= FILIERE =================
+\begin{center}
+    {\normalsize \textbf{Filière :} Génie Informatique}
+\end{center}
+
+\vspace{0.4cm}
+
+%================= RECTANGLE ARRONDI (titre) =================
+\begin{center}
+\begin{tikzpicture}
+  \node[
+    draw=headerblack,
+    rounded corners=60pt,
+    minimum width=0.99\textwidth,
+    minimum height=4cm,
+    line width=1.5pt,
+    align=center,
+    text width=0.7\textwidth
+  ] {\Large \textbf{Conception et Développement d'un Framework ETL à Gateways de Décision pour la Migration de Données vers l'ERP Axelor — Avec Assistance par Agents IA Génératifs}};
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.5cm}
+
+%================= ENTREPRISE =================
+\begin{center}
+    \large \textbf{Effectué à :}
+
+    \vspace{0.3cm}
+
+    \Large Axelor
+\end{center}
+
+\vspace{0.6cm}
+
+%================= REALISE PAR / ENCADRE PAR =================
+\begin{center}
+\begin{tabular}{p{0.4\textwidth} p{0.1\textwidth} p{0.4\textwidth}}
+  \textbf{Réalisé par :} & & \textbf{Encadré par :} \\[0.1cm]
+  Taha GHAILAN           & & \textbf{Maître de Stage :} Mehdi Abid \\[0.05cm]
+                         & & \textbf{Tuteur en entreprise :} Abderrahim Aabane \\[0.05cm]
+                         & & \textbf{Encadrant Pédagogique :} PR. EL BOUZEKRI EL IDRISSI YOUNES \\
+\end{tabular}
+\end{center}
+
+\vfill
+
+%================= JURY =================
+\begin{center}
+    \textbf{Soutenu le JJ Juillet 2026 devant le jury :}
+
+    \vspace{0.5cm}
+
+    \begin{tabular}{l @{\hspace{0.3cm}:\hspace{0.3cm}} l}
+        \textbf{Ilhame Oumaira} & Professeur de l'enseignement supérieur, ENSA Kénitra \\
+        \textbf{Mehdia Ajanna} & Qualité du maître de Stage \\
+    \end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+
+%================= ANNEE UNIVERSITAIRE (bottom right) =================
+\begin{flushright}
+    \textbf{Année Universitaire 2025 -- 2026}
+\end{flushright}
+
+\end{titlepage}
+
+\newgeometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+%================= DEDICACE =================
+\newpage
+\section*{Dédicace}
+\begin{quote}
+\textit{«
+À ma chère mère,\\
+À mon cher père,\\
+Je vous exprime toute ma reconnaissance pour vos sacrifices, votre soutien et vos prières durant mon parcours.\\
+À mes frères Hamza et Ahmed,\\
+Merci pour votre présence et votre soutien à votre manière.\\
+À tous les membres de ma famille et mes amis,\\
+Je vous dédie ce travail.\\
+Merci.
+»}
+\end{quote}
+
+%================= REMERCIEMENTS =================
+\newpage
+\section*{Remerciements}
+
+Au terme de ce projet de fin d'études, je remercie Allah pour m'avoir accordé la force, la volonté et la détermination nécessaires pour accomplir ce travail.
+
+J'exprime ma profonde gratitude et mes vifs remerciements à mon tuteur en entreprise, \textbf{M.~AABANE Abderrahim}, pour son encadrement attentif, ses conseils avisés et son accompagnement constant tout au long de cette expérience professionnelle. Je tiens également à remercier mon manager, \textbf{M.~ABID Mehdi}, pour la confiance qu'il m'a accordée, son soutien et ses précieux conseils.
+
+J'exprime ma sincère reconnaissance à mon encadrant pédagogique, \textbf{PR.~EL BOUZEKRI EL IDRISSI YOUNES}, pour son suivi rigoureux, ses remarques constructives et son encadrement de qualité tout au long de ce projet.
+
+Je tiens par ailleurs à remercier \textbf{Mme.~OUMAIRA Ilhame} et \textbf{Mme.~AJANNA Mehdia}, membres du jury, pour l'honneur qu'elles me font en acceptant d'examiner et d'évaluer ce travail.
+
+Mes vifs remerciements vont à toute l'équipe \textbf{Axelor Maroc} pour leur accueil chaleureux, leur disponibilité, leurs formations et leurs remarques pertinentes qui ont grandement contribué à ma montée en compétences.
+
+À l'issue de ces années passées au sein de l'École Nationale des Sciences Appliquées de Kénitra, j'adresse mes sincères remerciements à l'ensemble du corps professoral et administratif pour l'inestimable qualité de l'enseignement dispensé.
+
+Pour finir, je souhaite remercier toute personne ayant contribué de près ou de loin à la réalisation de ce travail.
+
+%================= RESUME =================
+\newpage
+\section*{Résumé}
+
+La migration de données constitue l'un des défis les plus critiques lors du déploiement d'un ERP. Dans le contexte d'Axelor Open Suite, ce processus repose actuellement sur des scripts Java développés spécifiquement pour chaque projet client — une approche coûteuse, non réutilisable et difficile à maintenir.
+
+Ce mémoire présente la conception et le développement d'un framework ETL générique à gateways de décision, basé sur Apache Hop, destiné à standardiser et automatiser l'import de données vers Axelor. Le framework formalise les règles métier de l'ERP en transformations déclaratives et réutilisables, organisées selon un spectre de complexité couvrant les entités simples (unités, familles) jusqu'aux entités complexes à résolution de clés étrangères multiples (partenaires, commandes, factures).
+
+La solution intègre deux contributions complémentaires : (1) une architecture de pipeline à gateways capturant les règles métier sans appel à l'API Axelor, couvrant quatre domaines fonctionnels (produits, partenaires, commandes, factures) avec résolution automatique des dépendances inter-entités ; (2) un pattern d'\textit{Agent-Assisted ETL} composé de 3 skills IA spécialisées qui automatisent le cycle complet d'import — de l'analyse interactive du schéma source avec introspection de la base cible, à la génération de pipelines Apache Hop conformes, jusqu'à l'orchestration par workflow. Ce pattern est concrétisé par une application web (\textit{Axelor Mapper}) offrant une interface conversationnelle entre le consultant et l'agent IA.
+
+L'évaluation du framework sur quatre domaines fonctionnels démontre la capacité à importer des entités de complexité croissante, avec un gain de productivité significatif sur les phases de configuration et de mapping grâce à l'assistance IA.
+
+\textbf{Mots clés :} ETL, Apache Hop, ERP, Axelor, Pipeline à Gateways, Migration de Données, LLM, Agent IA, Génération de Code.
+
+%================= ABSTRACT =================
+\section*{Abstract}
+
+Data migration is one of the most critical challenges when deploying an ERP system. In the context of Axelor Open Suite, this process currently relies on Java scripts developed specifically for each client project — a costly, non-reusable approach that is difficult to maintain.
+
+This report presents the design and development of a generic decision-gateway ETL framework, built on Apache Hop, aimed at standardising and automating data import into Axelor. The framework formalises the ERP's business rules as declarative, reusable transformations, organised along a complexity spectrum ranging from simple entities (units, families) to complex ones with multiple foreign key resolution (partners, orders, invoices).
+
+The solution delivers two complementary contributions: (1) a gateway-based pipeline architecture that captures business rules without any call to the Axelor API, covering four functional domains (products, partners, orders, invoices) with automatic inter-entity dependency resolution; (2) an \textit{Agent-Assisted ETL} pattern comprising 3 specialised AI skills that automate the full import cycle — from interactive source schema analysis with target database introspection, to compliant Apache Hop pipeline generation, to workflow orchestration. This pattern is materialised through a web application (\textit{Axelor Mapper}) providing a conversational interface between the consultant and the AI agent.
+
+Evaluation of the framework across four functional domains demonstrates the ability to import entities of increasing complexity, with significant productivity gains on configuration and mapping phases through AI assistance.
+
+\textbf{Keywords:} ETL, Apache Hop, ERP, Axelor, Gateway Pipeline, Data Migration, LLM, AI Agent, Code Generation.
+
+%================= TABLE DES MATIERES =================
+\newpage
+\tableofcontents
+
+%================= LISTE DES FIGURES =================
+\newpage
+\listoffigures
+
+%================= LISTE DES TABLEAUX =================
+\listoftables
+
+%================= LISTE DES ABREVIATIONS =================
+\newpage
+\section*{Liste des abréviations}
+\addcontentsline{toc}{section}{Liste des abréviations}
+
+\begin{tabular}{p{0.18\textwidth} p{0.75\textwidth}}
+\textbf{AOP}  & Axelor Open Platform \\[0.2cm]
+\textbf{AOS}  & Axelor Open Suite \\[0.2cm]
+\textbf{API}  & Application Programming Interface \\[0.2cm]
+\textbf{BPM}  & Business Process Management \\[0.2cm]
+\textbf{CRM}  & Customer Relationship Management \\[0.2cm]
+\textbf{ERP}  & Enterprise Resource Planning \\[0.2cm]
+\textbf{ETL}  & Extract, Transform, Load \\[0.2cm]
+\textbf{FK}   & Foreign Key (Clé étrangère) \\[0.2cm]
+\textbf{IA}   & Intelligence Artificielle \\[0.2cm]
+\textbf{LLM}  & Large Language Model (Grand Modèle de Langage) \\[0.2cm]
+\textbf{ORM}  & Object-Relational Mapping \\[0.2cm]
+\textbf{PFE}  & Projet de Fin d'Études \\[0.2cm]
+\textbf{SQL}  & Structured Query Language \\[0.2cm]
+\textbf{UDJC} & User Defined Java Class \\[0.2cm]
+\textbf{XML}  & eXtensible Markup Language \\[0.2cm]
+\end{tabular}
+
+%================= INTRODUCTION GENERALE =================
+\newpage
+\section*{Introduction générale}
+\addcontentsline{toc}{section}{Introduction générale}
+
+Dans un contexte économique en perpétuelle évolution, les entreprises sont confrontées à une pression croissante liée à la mondialisation, à l'évolution des attentes des clients et à l'essor des nouvelles technologies numériques. La digitalisation des processus s'impose comme un levier stratégique incontournable : elle permet de simplifier les opérations, d'automatiser les tâches répétitives, de fiabiliser les flux d'informations et de prendre des décisions éclairées à partir de données actualisées et structurées.
+
+Les systèmes ERP (Enterprise Resource Planning) occupent une place centrale dans cette transformation. Ils permettent de centraliser et d'intégrer l'ensemble des processus métier d'une organisation — gestion commerciale, finance, production, ressources humaines, supply chain — au sein d'un système unique et cohérent. Cependant, le déploiement d'un ERP dans une entreprise existante soulève invariablement une problématique critique et souvent sous-estimée : la \textbf{migration des données historiques}. Chaque client possède ses propres systèmes legacy (Sage, Dolibarr, Excel, bases Access), dont les données doivent être extraites, transformées et chargées dans le nouvel ERP avec précision et intégrité.
+
+C'est précisément dans ce contexte que s'inscrit le présent projet de fin d'études, réalisé au sein d'\textbf{Axelor}, éditeur français d'une plateforme ERP-CRM-BPM open source. Face à la multiplication des projets clients et à la complexité croissante des données à migrer, Axelor fait face à une limitation structurelle de son processus d'import actuel : chaque déploiement nécessite le développement de scripts Java sur mesure, non réutilisables et difficiles à maintenir.
+
+L'objectif de ce stage est de concevoir un \textbf{framework ETL générique à gateways de décision}, basé sur Apache Hop, capable de formaliser les règles métier d'Axelor en transformations déclaratives et réutilisables. Ce framework s'enrichit d'une couche d'assistance par agents IA génératifs (Claude Code) et d'une application web de mapping interactif (\textit{Axelor Mapper}), permettant de traiter automatiquement la majorité des cas et d'assister le consultant sur les phases de configuration et de génération de pipelines.
+
+\medskip
+Le présent rapport est structuré comme suit :
+
+\begin{itemize}
+  \item Le \textbf{premier chapitre} présente l'organisme d'accueil, Axelor, ses activités, son organisation et ses produits phares.
+  \item Le \textbf{deuxième chapitre} expose le contexte et la problématique du projet, l'architecture de la solution proposée, ainsi que les contributions attendues.
+  \item Le \textbf{troisième chapitre} présente un état de l'art sur les outils ETL, les approches de migration ERP et l'intelligence artificielle générative dans le génie logiciel.
+  \item Les \textbf{chapitres suivants} détailleront la conception, l'implémentation et l'évaluation de la solution.
+  \item Une \textbf{conclusion générale} synthétise les résultats obtenus et ouvre sur les perspectives d'évolution.
+\end{itemize}
+
+%================= ORGANISME D'ACCUEIL =================
+\newpage
+\section{Présentation de l'organisme d'accueil}
+
+\subsection{Introduction}
+
+Ce chapitre présente l'organisme d'accueil au sein duquel ce stage a été effectué, à savoir la société Axelor. Nous abordons ensuite les bases de la solution Axelor afin de mieux comprendre l'environnement de travail dans lequel s'inscrit notre projet.
+
+\subsection{Présentation d'Axelor}
+
+Axelor est une entreprise innovante spécialisée dans l'édition de logiciels de gestion d'entreprise, notamment dans les domaines de l'ERP, du BPM et du CRM. Fondée en 2005, elle a développé une solide expertise à travers plusieurs années d'intégration de logiciels et s'est distinguée par ses projets de recherche et développement au sein de la communauté open source. Depuis 2014, Axelor propose une suite d'applications métiers open source, modulaires et évolutives, qui constitue une alternative crédible aux solutions traditionnelles telles que SAP ou Microsoft Dynamics, en mettant en avant des valeurs de liberté, de transparence et d'accessibilité dans le développement logiciel.
+
+% TODO-FIGURE: Insérer le logo Axelor.
+% Source : récupérer le fichier PNG haute résolution sur www.axelor.com (presse/médias)
+% ou extraire depuis la page 4 du rapport Abderrahim (Fig. 1.1).
+\includegraphics[width=0.5\textwidth]{logos/logo_axelor.png}
+
+
+\begin{center}
+\rule{0.6\textwidth}{0.4pt}\\[0.3cm]
+\textit{« Nous avons vocation à fournir des outils informatiques performants,}\\
+\textit{modulaires et accessibles, afin de répondre aux besoins spécifiques de nos clients. »}\\[0.2cm]
+\textbf{Laith Jubair} — PDG d'Axelor\\[0.3cm]
+\rule{0.6\textwidth}{0.4pt}
+\end{center}
+
+\subsection{Le groupe Axelor}
+
+Le siège social d'Axelor est situé à la cité Descartes, un important pôle d'enseignement supérieur et de recherche à Marne-la-Vallée, en Seine-et-Marne, couvrant les communes de Champs-sur-Marne et de Noisy-le-Grand, près de Chelles.
+
+L'entreprise dispose également de filiales à Ahmedabad en Inde (créée en 2007), à Casablanca au Maroc (depuis 2022), ainsi qu'au Canada. Ces filiales sont principalement dédiées à la recherche et développement, au support technique et à l'accompagnement des projets clients.
+
+% TODO-FIGURE: Insérer l'organigramme de la filiale Axelor Maroc.
+% Source : demander à l'équipe Axelor Maroc un organigramme officiel,
+% ou utiliser la Figure 1 (Organigramme Axelor Maroc) du rapport Chaymae p. 22.
+    \includegraphics[width=0.9\textwidth]{logos/organigramme-axelor-maroc.png}
+
+
+\subsection{Vision et missions}
+
+Axelor est une entreprise jeune et innovante dans le secteur très porteur de l'édition de logiciels de gestion d'entreprise. Les logiciels proposés reposent sur des technologies de pointe afin d'offrir aux clients des outils performants, souples et en avance sur leur temps.
+
+La mission d'Axelor consiste à développer des applications sur mesure à partir de briques open source, en capitalisant sur des composants applicatifs réutilisables pour construire un framework générique personnalisable selon les besoins de chaque client. Axelor possède un état d'esprit start-up porté par une vision de l'innovation, et accorde une importance particulière au bien-être de ses collaborateurs — distinction illustrée par son titre de \textit{Happy at Work} obtenu en 2017 et 2019.
+
+\subsection{Activités et services}
+
+Axelor propose à ses clients une gamme de services complète autour de ses produits AOS, allant de l'étude des besoins jusqu'à la mise en place de l'application et sa maintenance. La plateforme est déployée dans plusieurs secteurs d'activité : Industries, Ministères, Sociétés de services, Cabinets conseils, Organismes de formation. Elle repose sur deux composantes principales :
+
+\begin{itemize}
+  \item \textbf{Axelor Open Platform (AOP)} : une plateforme de développement low-code / no-code intégrant un moteur BPM qui permet de modéliser visuellement les processus métier et de générer des applications fonctionnelles s'intégrant nativement avec la bibliothèque des applications métiers.
+  \item \textbf{Axelor Open Suite (AOS)} : une suite de plus d'une trentaine d'applications métiers intégrées couvrant l'ERP, le CRM, la gestion commerciale, les ressources humaines, le stock, la production, la comptabilité et bien d'autres domaines.
+\end{itemize}
+
+% TODO-FIGURE: Insérer une capture d'écran des modules de l'ERP Axelor Open Suite.
+% Source : faire une capture depuis l'interface AOS (menu principal, vue des applications),
+% ou utiliser la Figure 7 "Les modules de l'ERP Axelor" du rapport Chaymae p. 25.
+    \includegraphics[width=0.9\textwidth]{logos/axelor-modules.png}
+    
+    \includegraphics[width=0.9\textwidth]{logos/axelor-modules2.png}
+
+
+\subsection{Fiche technique}
+
+\begin{center}
+\begin{tabular}{|p{0.38\textwidth}|p{0.52\textwidth}|}
+\hline
+\textbf{Raison sociale} & Axelor SAS \\
+\hline
+\textbf{Date de création} & 2005 \\
+\hline
+\textbf{Siège social} & Cité Descartes, Marne-la-Vallée, France \\
+\hline
+\textbf{Secteur d'activité} & Édition de logiciels de gestion d'entreprise \\
+\hline
+\textbf{Domaines} & ERP, CRM, BPM \\
+\hline
+\textbf{PDG} & Laith Jubair \\
+\hline
+\textbf{Filiales} & Axelor Inde (Ahmedabad, 2007), Axelor Maroc (Casablanca, 2022), Canada \\
+\hline
+\textbf{Produits phares} & Axelor Open Platform (AOP), Axelor Open Suite (AOS) \\
+\hline
+\textbf{Modèle} & Open source / SaaS \\
+\hline
+\textbf{Site web} & \texttt{www.axelor.com} \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Conclusion}
+
+Ce chapitre nous a permis de présenter Axelor, société éditrice d'une plateforme ERP-CRM-BPM open source reconnue, dont la filiale marocaine constitue le cadre de ce stage. La richesse fonctionnelle de la suite AOS et la vision innovante de l'entreprise fournissent un contexte stimulant pour le projet de framework ETL qui fait l'objet de ce mémoire.
+
+%================= PROBLEMATIQUE =================
+\newpage
+\section{Contexte et problématique du projet}
+
+\subsection{Le problème de la migration ERP}
+
+Chaque déploiement d'un ERP nécessite l'import de données depuis les systèmes legacy du client : Sage, Dolibarr, Cegid, fichiers Excel, bases Access, etc. Dans le cas d'Axelor Open Suite (AOS), cet import repose actuellement sur des scripts Java custom écrits spécifiquement pour chaque client. Le tableau suivant illustre la réalité de quelques projets récents :
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Projet} & \textbf{Scripts} & \textbf{Secteur} \\
+\hline
+bolt-app & 23 scripts Java & Manufacturing \\
+\hline
+neodyme  & 20 scripts Java & Services \\
+\hline
+xelians  & 3 configs XML + scripts Python & Gestion documentaire \\
+\hline
+\end{tabular}
+\end{center}
+
+Ce modèle présente des limites structurelles majeures : il est coûteux, non réutilisable, et ne produit ni rapports d'anomalies exploitables par les consultants fonctionnels, ni validation de qualité en amont. Chaque nouveau projet requiert un développeur Java dédié, ce qui freine la scalabilité des déploiements Axelor.
+
+\subsection{Le spectre de complexité des entités ERP}
+
+Les entités Axelor se répartissent sur un spectre de complexité croissante qui détermine l'approche d'import à adopter :
+
+\begin{center}
+\begin{tabular}{|p{0.13\textwidth}|p{0.18\textwidth}|p{0.3\textwidth}|p{0.28\textwidth}|}
+\hline
+\textbf{Catégorie} & \textbf{Exemples} & \textbf{Caractéristiques} & \textbf{Approche import} \\
+\hline
+Simple & Company, User & INSERT SQL direct, pas de logique métier & Pipeline SQL pure (Pattern D) \\
+\hline
+Moyenne & Partner, Product & 5--15 clés étrangères, quelques lookups & Pipeline + Database Lookup/Join \\
+\hline
+Complexe & Invoice, SaleOrder & 30+ FK, logique fiscale, calculs de totaux, échéances & Pipeline à gateways avancés \\
+\hline
+Complexe avancé & Manufacturing Order & Transitions d'état, calculs chaînés, comptabilité & Pipeline à gateways + UDJC \\
+\hline
+\end{tabular}
+\end{center}
+
+L'import de factures constitue le cas le plus exigeant : il implique 4 tables PostgreSQL interdépendantes, une résolution fiscale multi-niveaux, et le calcul d'échéances de paiement conformes aux règles métier Axelor.
+
+\subsection{Positionnement par rapport aux approches existantes}
+
+Quatre approches fondamentales coexistent pour l'import dans un ERP, chacune avec des compromis différents :
+
+\begin{center}
+\begin{tabular}{|p{0.38\textwidth}|p{0.15\textwidth}|p{0.15\textwidth}|p{0.18\textwidth}|}
+\hline
+\textbf{Approche} & \textbf{Performance} & \textbf{Intégrité} & \textbf{Maintenance} \\
+\hline
+INSERT SQL direct (bypass ORM) & +++ & --- & --- \\
+\hline
+\textbf{ETL + SQL hybride (notre approche)} & \textbf{++} & \textbf{+} & \textbf{++} \\
+\hline
+ORM / Framework natif Axelor & + & ++ & + \\
+\hline
+API REST / Web Services & - & +++ & ++ \\
+\hline
+\end{tabular}
+\end{center}
+
+Notre framework se positionne dans la zone intermédiaire ETL + SQL hybride : l'écriture se fait par INSERT/UPDATE direct dans PostgreSQL pour les performances, et le pipeline reproduit les règles d'intégrité de l'ORM via des transforms Hop (lookups, Calculator, ScriptValueMod). L'import est totalement autonome — aucun appel API à l'instance Axelor n'est nécessaire — et le framework s'enrichit d'une couche d'assistance IA pour accélérer les phases de configuration et de génération.
+
+\subsection{L'opportunité Apache Hop}
+
+Apache Hop est un framework ETL open-source, fork moderne de Pentaho/Kettle (2020), promu projet top-level Apache en 2023. Il offre plus de 400 transforms natifs, des pipelines XML versionnables sous Git, un support Docker natif, une architecture extensible par plugins Java custom, et la possibilité d'exécution locale ou distribuée (Beam, Spark, Flink). La version 2.17.0 (février 2026) embarque un support Docker mature et un framework de tests unitaires intégré. Ces caractéristiques en font un outil particulièrement adapté à la conception d'un framework d'import générique et réutilisable pour l'ERP Axelor.
+
+\subsection{Problématique centrale}
+
+Au regard de ce contexte, la problématique centrale de ce stage est la suivante :
+
+\medskip
+\begin{center}
+\fbox{\parbox{0.88\textwidth}{%
+\medskip
+\textit{Comment concevoir un framework ETL à gateways de décision qui formalise les règles métier d'un ERP en transformations déclaratives, garantit l'intégrité des données par résolution automatique des dépendances, et accélère le cycle de configuration via l'assistance d'agents IA génératifs ?}
+\medskip
+}}
+\end{center}
+\medskip
+
+\subsection{Contributions attendues}
+
+Pour répondre à cette problématique, le projet s'articule autour de quatre contributions complémentaires regroupées en deux axes :
+
+\medskip
+\noindent\textbf{Axe 1 — Framework ETL à Gateways}
+
+\textbf{Contribution 1 — Architecture de pipeline à gateways de décision.}
+Concevoir et implémenter une architecture utilisant les transforms Apache Hop (Switch/Case, Filter Rows, Database Lookup/Join, UDJC) comme gateways de décision. Chaque gateway vérifie, enrichit et route les données de manière progressive. Le framework couvre quatre domaines fonctionnels de complexité croissante : produits (unités, familles, catégories), partenaires (adresses, contacts, entreprises), commandes de vente (lignes, taxes), et factures (lignes, taxes, échéances).
+
+\textbf{Contribution 2 — Formalisation du spectre d'autonomie.}
+Classifier chaque entité ERP sur un axe SQL pur $\rightarrow$ pipeline enrichie $\rightarrow$ pipeline à gateways avancés, selon des critères formels (nombre de clés étrangères, présence de logique métier, transitions d'état). Toute la logique métier Java est reproduite dans les transforms Hop — aucun appel API à l'application ERP. Cette classification est généralisable au-delà d'Axelor.
+
+\medskip
+\noindent\textbf{Axe 2 — Agent IA Génératif et Application de Mapping}
+
+\textbf{Contribution 3 — Pattern Agent-Assisted ETL.}
+Concevoir et implémenter 3 skills IA spécialisées qui automatisent les phases les plus chronophages du cycle d'import : (a) \texttt{analyze-and-map-entity} — analyse interactive du schéma source avec introspection live de la base PostgreSQL cible et résolution conversationnelle des clés étrangères ; (b) \texttt{generate-pipeline} — génération de pipelines Apache Hop XML conformes à partir d'un manifeste structuré ; (c) \texttt{generate-workflow} — génération du workflow orchestrateur avec vérifications préalables et routage d'erreurs.
+
+\textbf{Contribution 4 — Application Axelor Mapper.}
+Développer une application web full-stack (FastAPI + React) servant d'interface entre le consultant et les skills IA. L'application offre un terminal interactif embarqué, un profilage automatique des fichiers CSV sources, et une génération de manifestes exploitables par les skills de génération de pipelines.
+
+\subsection{Architecture de la solution proposée}
+
+\subsubsection{Les 5 patterns fondamentaux}
+
+Le framework repose sur 5 patterns réutilisables, chacun encapsulant une responsabilité distincte :
+
+\begin{center}
+\begin{tabular}{|p{0.2\textwidth}|p{0.22\textwidth}|p{0.35\textwidth}|p{0.08\textwidth}|}
+\hline
+\textbf{Pattern} & \textbf{Rôle} & \textbf{Transforms principaux} & \textbf{Phase} \\
+\hline
+A : Source-Agnostique & Lecture multi-format (CSV, Excel, DB) & CSVInput, ExcelInput, TableInput, PipelineExecutor & 1 \\
+\hline
+B : FK Resolution & Résolution clés étrangères vers Axelor & Database Lookup, PipelineExecutor, Filter Rows & 3 \\
+\hline
+C : Upsert Axelor & Insert/Update idempotent par import\_id & DBLookup, ScriptValueMod, InsertUpdate, ExecSql & 2 \\
+\hline
+D : Rapport Anomalies & Génération rapport erreurs CSV & Filter Rows, Group By, TextFileOutput & 4 \\
+\hline
+E : Master-Detail & Synchronisation header/lignes & Block Until Transforms Finish, PipelineExecutor & 5 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Architecture workflow globale}
+
+Le workflow orchestrateur exécute les domaines d'import dans l'ordre de leurs dépendances FK : \textbf{Vérifications préalables} (existence fichiers, connectivité base) $\rightarrow$ \textbf{Import Produits} (unités, familles, catégories, produits) $\rightarrow$ \textbf{Import Partenaires} (adresses, partenaires, contacts, liens) $\rightarrow$ \textbf{Import Commandes} (commandes, lignes, taxes, totaux) $\rightarrow$ \textbf{Import Factures} (factures, lignes, taxes, échéances). Chaque étape dispose d'un routage d'erreur dédié : en cas d'échec, le workflow s'arrête avec un message diagnostique sans compromettre les données déjà importées.
+
+\insertfig{Schéma à créer dans draw.io : workflow séquentiel avec vérifications préalables → 4 domaines en ordre de dépendance → Success, avec routage d'erreur par étape}{Architecture workflow globale du framework ETL}
+
+\subsubsection{Pipeline de factures : architecture détaillée}
+
+L'import de factures constitue le domaine le plus complexe du framework. Contrairement aux approches qui tentent de reproduire la logique comptable complète dans l'ETL, notre architecture importe les factures en statut \textbf{brouillon} (draft) ou \textbf{validé} (validated), puis délègue la ventilation comptable (création des écritures Move/MoveLines) à l'application Axelor elle-même. Ce choix architectural garantit la conformité comptable sans reproduire une logique métier complexe et susceptible d'évoluer entre versions d'AOS.
+
+\medskip
+\noindent\textbf{Phase A — Lecture et Normalisation.}
+Lecture CSV source avec normalisation des formats français : dates dd/MM/yyyy vers ISO, décimaux avec virgule vers point. Génération des \texttt{import\_id} par concaténation de champs identifiants.
+
+\medskip
+\noindent\textbf{Phase B — Enrichissement FK Progressif.}
+Résolution séquentielle des clés étrangères : Partner (par \texttt{import\_id} puis fallback par code/name), Company et Currency (par code), Product (par \texttt{import\_id} puis code, avec produit par défaut en fallback). Chaque lookup utilise Database Lookup avec cache. Les FK non résolues sont routées vers le rapport d'erreurs CSV.
+
+\medskip
+\noindent\textbf{Phase C — Résolution Fiscale.}
+Résolution de la taxe du produit et du compte comptable via les tables de configuration Axelor (\texttt{account\_account\_management}). Application de la position fiscale du partenaire.
+
+\medskip
+\noindent\textbf{Phase D — Calculs de Lignes et Totaux.}
+Calcul par ligne : \texttt{priceDiscounted}, \texttt{exTaxTotal}, \texttt{inTaxTotal}, \texttt{companyExTaxTotal} avec conversion devise. Agrégation des taxes par taux (\texttt{InvoiceLineTax}). Calcul des totaux facture.
+
+\medskip
+\noindent\textbf{Phase E — Échéances de Paiement.}
+Calcul des échéances (\texttt{InvoiceTerms}) à partir des conditions de paiement configurées : montant = total TTC $\times$ pourcentage, date d'échéance selon le type (net, fin de mois). La dernière échéance absorbe l'arrondi.
+
+\medskip
+\noindent\textbf{Phase F — Insertion Multi-Tables.}
+Insertion dans l'ordre strict des dépendances FK : (1) \texttt{account\_invoice}, (2) \texttt{account\_invoice\_line}, (3) \texttt{account\_invoice\_line\_tax}, (4) \texttt{account\_invoice\_term}. Puis resynchronisation des séquences PostgreSQL via \texttt{setval()}.
+
+\medskip
+Ce choix d'importer en statut draft/validated permet ensuite à l'utilisateur de ventiler les factures directement dans l'interface Axelor, bénéficiant ainsi de toutes les validations métier natives (équilibre débit/crédit, numérotation séquentielle, journal comptable correct).
+
+% TODO-FIGURE: Insérer une capture d'écran de la pipeline dans l'interface Apache Hop GUI.
+% Source : une fois la pipeline construite dans Hop, faire une capture du canvas
+% montrant les 8 phases (boîtes reliées par des flèches).
+% Alternatively : créer un diagramme dans draw.io représentant les 8 phases en séquence.
+\insertfig{Capture du canvas Apache Hop GUI montrant les 8 phases de la pipeline de factures (à faire une fois la pipeline implémentée dans Hop), ou diagramme draw.io des phases A--H en séquence}{Vue d'ensemble de la pipeline de factures — 8 phases}
+
+\subsubsection{Les 4 tables alimentées par la pipeline de factures}
+
+\begin{center}
+\begin{tabular}{|c|l|l|l|}
+\hline
+\textbf{\#} & \textbf{Table} & \textbf{Lignes/facture} & \textbf{Phase} \\
+\hline
+1 & \texttt{account\_invoice} & 1 & F.1 \\
+\hline
+2 & \texttt{account\_invoice\_line} & N (lignes produit) & F.2 \\
+\hline
+3 & \texttt{account\_invoice\_line\_tax} & M (taxes distinctes) & F.3 \\
+\hline
+4 & \texttt{account\_invoice\_term} & P (échéances) & F.4 \\
+\hline
+\end{tabular}
+\end{center}
+
+Les tables comptables (\texttt{account\_move}, \texttt{account\_move\_line}) sont créées automatiquement par Axelor lors de la ventilation de la facture dans l'application, garantissant ainsi la conformité comptable native.
+
+% TODO-FIGURE: Créer un diagramme entité-relation simplifié des 4 tables.
+% Outil : draw.io ou DBSchema (export depuis la base de données Axelor).
+\insertfig{Diagramme entité-relation des 4 tables PostgreSQL alimentées par la pipeline de factures (à créer dans draw.io)}{Schéma entité-relation des tables cibles de la pipeline de factures}
+
+
+
+\subsection{Pattern Agent-Assisted ETL : les skills IA}
+
+\subsubsection{Principe de fonctionnement}
+
+L'IA intervient comme assistant au consultant durant les phases de configuration et de génération de pipelines. Le principe fondamental est que l'IA analyse, génère des artefacts techniques (manifestes, XML) et recommande — mais ne modifie jamais directement les données à importer.
+
+Les skills sont implémentées comme des prompts spécialisés invocables depuis un CLI (Claude Code) ou depuis l'application web Axelor Mapper. Chaque skill dispose de fichiers de référence documentant les conventions Apache Hop, les patterns XML, et les règles de mapping Axelor.
+
+\subsubsection{Les 3 skills implémentées}
+
+\begin{center}
+\begin{tabular}{|c|p{0.22\textwidth}|p{0.12\textwidth}|p{0.38\textwidth}|}
+\hline
+\textbf{\#} & \textbf{Skill} & \textbf{Phase} & \textbf{Rôle} \\
+\hline
+1 & \texttt{analyze-and-map-entity} & Mapping & Analyse interactive du CSV source avec introspection live de la base PostgreSQL cible, classification multi-signal des colonnes (dot notation, patterns, valeurs), résolution conversationnelle des FK, production d'un manifeste JSON structuré \\
+\hline
+2 & \texttt{generate-pipeline} & Génération & Compilation du manifeste en pipeline Apache Hop XML (.hpl) complète — gère upsert, insert-only, junction tables, computed fields, post-SQL \\
+\hline
+3 & \texttt{generate-workflow} & Orchestration & Génération du workflow .hwf avec vérifications préalables (fichier, connexion DB) et exécution ordonnée par dépendances \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Application Axelor Mapper}
+
+Les skills sont concrétisées dans une application web full-stack qui fournit une interface utilisable par les consultants fonctionnels. L'application expose un terminal interactif embarqué (xterm.js via WebSocket) permettant au consultant de converser avec l'agent IA, un profilage automatique des fichiers CSV (détection de types, taux de remplissage), et un flux guidé de la sélection d'entité cible jusqu'à la génération de pipelines.
+
+% TODO-FIGURE: Créer une capture d'écran ou maquette de l'interface Axelor Mapper.
+\insertfig{Capture d'écran de l'application Axelor Mapper montrant le terminal interactif et le flux de mapping}{Interface de l'application Axelor Mapper}
+
+\subsubsection{Cycle d'utilisation typique}
+
+Le cycle complet d'un import avec assistance IA se déroule comme suit :
+
+\begin{enumerate}
+  \item Le consultant sélectionne l'entité cible (ex. : Partner) et fournit les identifiants de la base.
+  \item L'agent introspection la base PostgreSQL cible (schéma, données existantes).
+  \item Le consultant dépose son fichier CSV source.
+  \item L'agent analyse les colonnes (headers + échantillon de valeurs) et propose un mapping.
+  \item Le consultant valide ou ajuste interactivement les résolutions FK.
+  \item Un manifeste JSON est produit, décrivant l'intégralité du plan d'import.
+  \item La skill \texttt{generate-pipeline} transforme le manifeste en fichier .hpl.
+  \item La skill \texttt{generate-workflow} produit l'orchestrateur .hwf.
+  \item Le consultant exécute le workflow dans Apache Hop.
+\end{enumerate}
+
+\subsection{Conclusion}
+
+Ce chapitre a mis en évidence les limites de l'approche actuelle d'import chez Axelor et formulé la problématique centrale du stage. La solution proposée — un framework ETL à gateways sur Apache Hop, enrichi d'une couche d'assistance IA — répond à ces limitations par une architecture modulaire, réutilisable et assistée. Les chapitres suivants détailleront la conception technique et l'implémentation des deux axes de cette solution.
+
+%================= ETAT DE L'ART =================
+\newpage
+\section{État de l'art}
+
+\subsection{Introduction}
+
+Ce chapitre positionne notre travail par rapport aux connaissances existantes dans trois domaines interdépendants : les enjeux de la migration de données dans les projets ERP, les outils ETL disponibles sur le marché, et l'utilisation de l'intelligence artificielle générative dans le développement logiciel. Cette revue permet de justifier les choix technologiques effectués et d'identifier les lacunes que notre approche cherche à combler.
+
+\subsection{Les ERP et les enjeux de la migration de données}
+
+La migration de données est reconnue dans la littérature comme l'un des facteurs de risque les plus critiques dans un projet d'implémentation ERP. Selon diverses études, entre 20\,\% et 30\,\% du budget d'un projet ERP est consacré aux activités de migration et d'intégration des données. Les principaux défis identifiés sont :
+
+\begin{itemize}
+  \item \textbf{L'hétérogénéité des sources} : les données legacy proviennent de formats variés (CSV, Excel, bases relationnelles, fichiers XML) avec des conventions de nommage, des formats de dates et des encodages différents.
+  \item \textbf{La qualité des données} : les données historiques contiennent fréquemment des doublons, des valeurs manquantes et des incohérences accumulées au fil des années.
+  \item \textbf{La complexité des règles métier} : les ERP modernes appliquent de nombreuses règles lors de la création d'entités (calculs comptables, transitions d'état, vérifications référentielles) qui doivent être reproduites fidèlement lors de l'import.
+  \item \textbf{Le maintien de l'intégrité référentielle} : l'ordre d'import des entités doit respecter les dépendances entre tables (les partenaires avant les factures, les produits avant les lignes de commande, etc.).
+\end{itemize}
+
+Les approches classiques — scripts ad hoc par développeur, import via API REST, outils de migration propriétaires des éditeurs ERP — répondent partiellement à ces défis mais présentent toutes des compromis importants entre performance, maintenabilité et intégrité des données, comme l'illustre la comparaison présentée dans le chapitre précédent.
+
+\subsection{Les outils ETL : panorama et positionnement d'Apache Hop}
+
+Les outils ETL (Extract, Transform, Load) constituent la catégorie d'outils la plus adaptée à la problématique de migration de données. Le tableau suivant compare les principaux outils disponibles :
+
+\begin{center}
+\begin{tabular}{|p{0.18\textwidth}|p{0.12\textwidth}|p{0.12\textwidth}|p{0.12\textwidth}|p{0.12\textwidth}|p{0.22\textwidth}|}
+\hline
+\textbf{Outil} & \textbf{Licence} & \textbf{Maturité} & \textbf{Transforms} & \textbf{Plugin Java} & \textbf{Remarque} \\
+\hline
+Apache Hop & Open source & Élevée (2023) & $>$400 & Oui & Fork actif de Pentaho, support Docker \\
+\hline
+Pentaho/Kettle & Open source & Très élevée & $>$300 & Oui & Vieillissant, racheté par Hitachi \\
+\hline
+Talend Open Studio & Open source & Élevée & $>$500 & Oui & Lourd, licence commerciale pour fonctions avancées \\
+\hline
+Apache NiFi & Open source & Élevée & $>$280 & Oui & Orienté streaming, moins adapté au batch ERP \\
+\hline
+Informatica PowerCenter & Commercial & Très élevée & $>$500 & Limité & Coût élevé, non adapté aux PME \\
+\hline
+Python (pandas/SQLAlchemy) & Open source & --- & N/A & N/A & Flexible mais nécessite du code pour chaque entité \\
+\hline
+\end{tabular}
+\end{center}
+
+Apache Hop se distingue par sa modernité (architecture remaniée depuis Pentaho), son écosystème actif au sein de la fondation Apache, et sa capacité à être étendu par des plugins Java. Son support natif de Git pour le versionnage des pipelines XML répond aux besoins de maintenabilité et de traçabilité du framework, et son format XML déterministe le rend particulièrement adapté à la génération automatique par des agents IA.
+
+% TODO-FIGURE: Insérer une capture d'écran de l'interface Apache Hop GUI (Hop Web ou Hop GUI desktop).
+% Source : faire une capture de l'interface lors d'une session de développement.
+% Contenu suggéré : vue de l'éditeur de pipeline avec quelques transforms connectés,
+% pour illustrer l'environnement de travail.
+\insertfig{Capture d'écran de l'interface Apache Hop GUI lors d'une session de développement (à faire depuis l'environnement de travail Hop)}{Interface de développement Apache Hop GUI}
+
+\subsection{L'intelligence artificielle générative dans le génie logiciel}
+
+L'essor des grands modèles de langage (LLM) a profondément modifié les pratiques du développement logiciel. Des outils tels que GitHub Copilot, ChatGPT ou Claude Code permettent désormais d'assister les développeurs dans la génération, l'analyse et la correction de code, avec des gains de productivité documentés allant jusqu'à 55\,\% sur certaines tâches de programmation.
+
+Dans le domaine de l'intégration de données, l'IA générative ouvre de nouvelles perspectives :
+
+\begin{itemize}
+  \item \textbf{Génération automatique de pipelines} : à partir de la description d'une entité et de ses règles métier, un LLM peut générer le squelette d'une pipeline ETL, réduisant significativement le temps de développement initial.
+  \item \textbf{Analyse des anomalies} : face à un rapport d'erreurs d'import, un agent IA peut identifier les patterns d'erreur, en déterminer la cause probable et formuler des recommandations en langage naturel, accessibles aux consultants non développeurs.
+  \item \textbf{Assistance contextuelle} : le paradigme de Claude Code, avec ses \textit{skills} (commandes personnalisables), permet d'encapsuler des procédures complexes et de les rendre accessibles via des commandes courtes, créant ainsi un assistant spécialisé sur le domaine ETL/ERP.
+\end{itemize}
+
+Un principe fondamental de notre approche est que \textbf{l'IA n'a pas le droit de modifier les données} : elle analyse, catégorise et conseille, mais toute correction reste sous la responsabilité du consultant ou du client. Cette contrainte, inspirée des bonnes pratiques de la gouvernance des données, garantit la traçabilité et la responsabilité dans le processus d'import.
+
+\subsection{Positionnement académique de la contribution}
+
+Notre travail se positionne à l'intersection de deux domaines de recherche : l'intégration de données et les architectures ETL, et l'IA générative appliquée au génie logiciel. La contribution originale réside dans la combinaison de ces deux domaines au sein d'un framework cohérent, où l'agent IA ne se contente pas d'assister le développeur mais génère directement les artefacts techniques (manifestes, pipelines XML, workflows) exploitables en production.
+
+\subsection{Conclusion}
+
+Cet état de l'art confirme la pertinence du choix d'Apache Hop comme socle du framework ETL et justifie l'intégration d'une couche IA générative pour l'assistance aux consultants. Il met également en évidence le caractère novateur de l'approche proposée, qui n'a pas d'équivalent direct dans les solutions ETL existantes pour les ERP open source.
+
+%================= CONCEPTION TECHNIQUE =================
+\newpage
+\section{Conception technique}
+
+\subsection{Introduction}
+
+Ce chapitre détaille les choix de conception qui sous-tendent la solution développée. L'objectif est de présenter l'architecture du système, les patterns de pipeline retenus, le rôle du manifeste JSON comme contrat intermédiaire, la conception des skills IA, et l'architecture de l'application Axelor Mapper. Ces choix sont justifiés au regard des contraintes identifiées dans les chapitres précédents : réutilisabilité, autonomie vis-à-vis de l'API Axelor, et accélération du cycle de configuration par l'IA.
+
+\subsection{Architecture globale du système}
+
+Le système se décompose en deux flux complémentaires qui peuvent fonctionner indépendamment :
+
+\begin{itemize}
+  \item \textbf{Flux d'exécution} : les pipelines Apache Hop (.hpl) orchestrées par des workflows (.hwf) importent les données CSV directement dans la base PostgreSQL d'Axelor. Ce flux est autonome — il ne nécessite ni IA ni application web.
+  \item \textbf{Flux d'assistance} : les skills IA et l'application Axelor Mapper assistent le consultant dans la création de nouvelles pipelines. Ce flux produit des manifestes JSON et génère les fichiers .hpl/.hwf qui alimentent ensuite le flux d'exécution.
+\end{itemize}
+
+L'interaction entre ces deux flux s'organise selon le schéma suivant :
+
+\begin{center}
+\begin{tabular}{ccccc}
+\textbf{Données CSV} & $\xrightarrow{\text{analyse}}$ & \textbf{Manifeste JSON} & $\xrightarrow{\text{génération}}$ & \textbf{Pipeline .hpl} \\
+(source client) & \textit{skill 1} & (contrat) & \textit{skill 2 \& 3} & (exécutable Hop) \\
+\end{tabular}
+\end{center}
+
+\medskip
+Le manifeste JSON joue un rôle central : il découple la phase d'analyse (compréhension des données source et mapping vers le schéma cible) de la phase de génération (production du XML Apache Hop). Ce découplage permet de modifier le mapping sans régénérer la pipeline, et inversement d'améliorer la génération sans refaire l'analyse.
+
+\insertfig{Diagramme d'architecture globale : flux d'exécution (CSV → Hop → PostgreSQL) et flux d'assistance (CSV → Skill 1 → Manifeste → Skills 2\&3 → .hpl/.hwf)}{Architecture globale du système — deux flux complémentaires}
+
+\subsection{Conception des pipelines ETL}
+
+Chaque pipeline suit une architecture commune composée de trois couches : lecture et filtrage, enrichissement par résolution FK, et écriture idempotente. Cette section détaille les patterns de conception qui assurent la cohérence et la réutilisabilité à travers les quatre domaines fonctionnels.
+
+\subsubsection{Le pattern Upsert}
+
+Le pattern fondamental de chaque pipeline est l'upsert idempotent par \texttt{import\_id}. Ce champ, généré par concaténation de colonnes identifiantes du fichier source, sert de clé de réconciliation entre les imports successifs :
+
+\begin{enumerate}
+  \item \textbf{Lecture CSV} : extraction des données avec filtrage des lignes vides.
+  \item \textbf{Lookup d'existence} : un Database Lookup vérifie si l'\texttt{import\_id} existe déjà dans la table cible.
+  \item \textbf{Branchement} : un Filter Rows sépare le flux en deux branches :
+  \begin{itemize}
+    \item \textbf{Branche INSERT} : attribution d'un ID via la séquence PostgreSQL, initialisation des champs d'audit (\texttt{version = 1}, \texttt{created\_on}, \texttt{created\_by}).
+    \item \textbf{Branche UPDATE} : incrémentation du champ \texttt{version}, mise à jour conditionnelle (uniquement si les données ont changé).
+  \end{itemize}
+\end{enumerate}
+
+Ce pattern garantit l'idempotence : un même fichier peut être importé plusieurs fois sans créer de doublons ni perdre de données.
+
+\subsubsection{Stratégie de résolution des clés étrangères}
+
+La résolution des FK constitue la partie la plus complexe des pipelines. Chaque entité référencée est résolue par une chaîne de lookups ordonnée par spécificité décroissante :
+
+\begin{center}
+\begin{tabular}{|c|p{0.25\textwidth}|p{0.45\textwidth}|}
+\hline
+\textbf{Priorité} & \textbf{Stratégie} & \textbf{Usage} \\
+\hline
+1 & Lookup par \texttt{import\_id} & Entités déjà importées par le framework \\
+\hline
+2 & Lookup par code métier & Données de référence (devise, unité, pays) \\
+\hline
+3 & Lookup par nom/libellé & Fallback quand seul le libellé est disponible \\
+\hline
+4 & Find-or-create & Entités simples créées à la volée si absentes (ex. : unités) \\
+\hline
+5 & Routage erreur & FK non résolue → ligne envoyée au rapport d'erreurs \\
+\hline
+\end{tabular}
+\end{center}
+
+Le choix entre Database Lookup (avec cache mémoire) et Database Join dépend de la cardinalité de la table cible : les tables de référence ($<$ 10K lignes) utilisent le cache, les tables volumineuses utilisent le join indexé.
+
+\subsubsection{Gestion des erreurs}
+
+Les pipelines adoptent une stratégie de tolérance aux erreurs : une ligne en échec ne bloque pas l'import des lignes suivantes. Les erreurs sont routées vers un fichier CSV de rapport contenant la ligne source complète et la raison de l'échec (FK non résolue, format invalide, contrainte violée). Ce rapport est exploitable par le consultant pour identifier les corrections à apporter aux données source avant un ré-import.
+
+\subsection{Conception du manifeste JSON}
+
+\subsubsection{Rôle du manifeste}
+
+Le manifeste JSON est le contrat machine-readable qui relie la phase d'analyse à la phase de génération. Il décrit de manière exhaustive le plan d'import d'une entité : table cible, colonnes mappées, résolutions FK, mode d'écriture, champs calculés, et ordre d'import des dépendances. Un manifeste constitue une spécification complète et suffisante pour générer une pipeline fonctionnelle sans information supplémentaire.
+
+Ce découplage présente trois avantages :
+\begin{itemize}
+  \item Le consultant peut relire et valider le manifeste avant la génération (lisibilité JSON vs XML Hop).
+  \item Le manifeste est versionnable et comparable (diff lisible entre deux itérations de mapping).
+  \item La skill de génération peut évoluer indépendamment de la skill d'analyse.
+\end{itemize}
+
+\subsubsection{Structure et versioning}
+
+Le schéma du manifeste a évolué en trois versions pour couvrir des cas de complexité croissante :
+
+\begin{center}
+\begin{tabular}{|l|p{0.6\textwidth}|}
+\hline
+\textbf{Version} & \textbf{Fonctionnalités ajoutées} \\
+\hline
+2.0 & Structure de base : entité, colonnes, FK, write\_mode (upsert), error\_file \\
+\hline
+2.1 & Champs calculés (JavaScript), tables secondaires, pré-transformations (regex), constantes, lookup\_field \\
+\hline
+2.2 & Mode insert\_only, concat\_fields, block\_row FK, update\_on\_change, junction\_pipelines, post\_pipelines (ExecSQL) \\
+\hline
+\end{tabular}
+\end{center}
+
+Chaque version est rétrocompatible : un manifeste 2.0 est traité correctement par un générateur supportant 2.2, les champs absents prenant des valeurs par défaut.
+
+\subsubsection{Exemple commenté}
+
+Un extrait simplifié de manifeste pour l'import de produits illustre la structure :
+
+\begin{verbatim}
+{
+  "version": "2.0",
+  "entity": "base_product",
+  "source_file": "products.csv",
+  "import_id_columns": ["code"],
+  "write_mode": "upsert",
+  "columns": [
+    {"source": "code", "target": "code", "type": "string"},
+    {"source": "name", "target": "name", "type": "string"},
+    {"source": "salePrice", "target": "sale_price", "type": "decimal"}
+  ],
+  "foreign_keys": [
+    {
+      "source": "productFamily.importId",
+      "target": "product_family",
+      "lookup_table": "base_product_family",
+      "lookup_by": "import_id"
+    }
+  ]
+}
+\end{verbatim}
+
+Ce manifeste suffit à la skill \texttt{generate-pipeline} pour produire une pipeline complète avec lecture CSV, résolution de la FK famille, et upsert dans \texttt{base\_product}.
+
+\subsection{Conception des skills IA}
+
+\subsubsection{Architecture prompt-as-compiler}
+
+L'approche retenue pour la génération de pipelines est celle du \textit{prompt-as-compiler} : un prompt long et hautement structuré qui transforme un manifeste JSON en XML Apache Hop de manière déterministe. Cette approche a été préférée aux alternatives pour les raisons suivantes :
+
+\begin{center}
+\begin{tabular}{|p{0.2\textwidth}|p{0.3\textwidth}|p{0.3\textwidth}|}
+\hline
+\textbf{Approche} & \textbf{Avantage} & \textbf{Inconvénient} \\
+\hline
+Fine-tuning & Réponses rapides & Modèle à maintenir, coût d'entraînement, perte de flexibilité \\
+\hline
+RAG & Contexte dynamique & Résultats non déterministes, difficulté à garantir la conformité XML \\
+\hline
+\textbf{Prompt-as-compiler} & \textbf{Déterministe, versionnable, pas d'infra supplémentaire} & \textbf{Prompts longs (coût tokens)} \\
+\hline
+\end{tabular}
+\end{center}
+
+Le prompt agit comme une spécification de compilateur : pour un manifeste donné, il doit produire exactement le même XML à chaque exécution. Les 81 Ko de prompts cumulés (3 skills + 7 fichiers de référence) constituent en réalité une documentation exécutable du format Apache Hop.
+
+\subsubsection{Architecture par références}
+
+Chaque skill est structurée en deux niveaux :
+
+\begin{itemize}
+  \item \textbf{Prompt principal} : logique de contrôle, phases d'exécution, règles de décision.
+  \item \textbf{Fichiers de référence} : blocs de connaissance modulaires (types de colonnes, patterns XML, conventions de nommage, entités connues).
+\end{itemize}
+
+Cette séparation permet de mettre à jour un pattern XML sans toucher à la logique du prompt, et de partager des références entre skills (ex. : les conventions Hop sont utilisées par les skills 2 et 3).
+
+\subsubsection{Skill 1 : analyze-and-map-entity}
+
+Cette skill implémente un pipeline conversationnel en 5 phases pour analyser un fichier CSV source et produire un manifeste :
+
+\begin{enumerate}
+  \item \textbf{Connexion} : test de la connectivité PostgreSQL via les variables d'environnement.
+  \item \textbf{Analyse source} : lecture des headers CSV et échantillon de valeurs, récupération du schéma réel depuis \texttt{information\_schema}.
+  \item \textbf{Classification} : chaque colonne est classifiée par trois signaux combinés — notation pointée (ex. \texttt{productFamily.importId}), pattern de nommage, et analyse statistique des valeurs (cardinalité, homogénéité).
+  \item \textbf{Résolution FK} : vérification en base des valeurs FK existantes, dialogue avec le consultant pour les références manquantes (créer? ignorer? fichier séparé?).
+  \item \textbf{Production} : écriture du manifeste JSON conforme au schéma versionné.
+\end{enumerate}
+
+\subsubsection{Skill 2 : generate-pipeline}
+
+Cette skill compile un manifeste en un fichier \texttt{.hpl} (XML Apache Hop). Elle supporte quatre variantes de pipeline :
+
+\begin{itemize}
+  \item \textbf{Upsert standard} : le pattern par défaut (lecture → FK → branchement → insert/update).
+  \item \textbf{Insert-only} : pour les entités sans mise à jour (tables de jonction, lignes de commande).
+  \item \textbf{Junction pipeline} : liaison M2M entre deux entités via une table intermédiaire.
+  \item \textbf{Post-pipeline} : exécution SQL post-import (resynchronisation de séquences, mise à jour de champs calculés).
+\end{itemize}
+
+Les fichiers de référence fournissent les blocs XML exacts pour chaque type de transform Hop, garantissant la conformité syntaxique du XML généré.
+
+\subsubsection{Skill 3 : generate-workflow}
+
+Cette skill génère le fichier \texttt{.hwf} orchestrateur à partir de la liste des entités et de leurs dépendances. Le workflow produit inclut :
+
+\begin{itemize}
+  \item Des vérifications préalables (existence des fichiers source, connectivité base).
+  \item L'exécution ordonnée des pipelines selon les dépendances FK.
+  \item Un routage d'erreur par étape (abort avec message diagnostique en cas d'échec).
+\end{itemize}
+
+\subsection{Conception de l'application Axelor Mapper}
+
+\subsubsection{Architecture technique}
+
+L'application Axelor Mapper expose les skills IA via une interface web accessible aux consultants fonctionnels. L'architecture retenue est une application monolithique à deux tiers :
+
+\begin{itemize}
+  \item \textbf{Backend} (FastAPI, Python) : gestion des sessions, profilage CSV, interaction avec les LLM, génération de manifestes.
+  \item \textbf{Frontend} (React, TypeScript) : interface utilisateur avec terminal embarqué, upload de fichiers, visualisation du manifeste.
+\end{itemize}
+
+L'application utilise trois patterns d'interaction avec les modèles de langage selon le besoin :
+
+\begin{center}
+\begin{tabular}{|p{0.2\textwidth}|p{0.2\textwidth}|p{0.4\textwidth}|}
+\hline
+\textbf{Pattern} & \textbf{Modèle} & \textbf{Usage} \\
+\hline
+Single-shot API & Groq (Llama 3.3) & Proposition initiale de mapping (rapide, peu coûteux) \\
+\hline
+CLI streaming & Claude (subprocess) & Conversation de mapping avec contexte long \\
+\hline
+PTY terminal & Claude (WebSocket) & Terminal interactif visible par le consultant \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Flux applicatif}
+
+Le flux d'une session de mapping suit 5 étapes :
+
+\begin{enumerate}
+  \item \textbf{Sélection de l'entité cible} et saisie des identifiants de connexion à la base.
+  \item \textbf{Upload du fichier CSV} : le backend profile automatiquement le fichier (types détectés, taux de remplissage, échantillon de valeurs).
+  \item \textbf{Mapping interactif} : le consultant dialogue avec l'agent IA pour résoudre les ambiguïtés de mapping et les FK manquantes.
+  \item \textbf{Validation du manifeste} : le manifeste produit est affiché pour relecture et confirmation.
+  \item \textbf{Génération} : les pipelines et le workflow sont générés à partir du manifeste validé.
+\end{enumerate}
+
+\subsubsection{Choix du terminal interactif}
+
+L'interface intègre un terminal réel (xterm.js connecté via WebSocket à un PTY côté serveur) plutôt qu'un simple chat. Ce choix a été motivé par la transparence : le consultant observe en temps réel les commandes exécutées par l'agent (requêtes SQL d'introspection, lecture de fichiers, écriture du manifeste). Cette visibilité renforce la confiance dans le processus et permet au consultant d'intervenir à tout moment.
+
+\insertfig{Diagramme de composants de l'application Axelor Mapper : Frontend (React) ↔ WebSocket/REST ↔ Backend (FastAPI) ↔ LLM (Groq/Claude) + PostgreSQL}{Architecture de l'application Axelor Mapper}
+
+\subsection{Conclusion}
+
+Ce chapitre a présenté les choix de conception structurants du framework : le pattern upsert idempotent comme brique élémentaire des pipelines, le manifeste JSON comme contrat de découplage entre analyse et génération, l'approche prompt-as-compiler pour la génération déterministe de XML Hop, et l'architecture à trois patterns LLM de l'application Mapper. Le chapitre suivant détaillera l'implémentation concrète de ces conceptions.
+
+%================= CONCLUSION GENERALE =================
+\newpage
+\section*{Conclusion générale et perspectives}
+\addcontentsline{toc}{section}{Conclusion générale et perspectives}
+
+\textbf{[Placeholder — à rédiger à la fin du stage, une fois tous les chapitres techniques complétés.]}
+
+\medskip
+Ce mémoire a présenté la conception et le développement d'un framework ETL générique à gateways de décision pour la migration de données vers l'ERP Axelor Open Suite. Face aux limites de l'approche actuelle — des scripts Java non réutilisables, un processus d'import sans formalisation, une dépendance forte aux développeurs — la solution proposée articule deux contributions complémentaires.
+
+La première contribution, le framework ETL à gateways sur Apache Hop, formalise les règles métier en transformations déclaratives réutilisables et couvre quatre domaines fonctionnels de complexité croissante (produits, partenaires, commandes, factures). Le framework opère en totale autonomie vis-à-vis de l'application Axelor — écritures directes en base PostgreSQL avec respect de l'intégrité référentielle.
+
+La seconde contribution, le pattern Agent-Assisted ETL, place l'intelligence artificielle générative au service du consultant à travers trois skills spécialisées et une application web dédiée (Axelor Mapper). Ce pattern automatise les phases les plus chronophages du cycle d'import : l'analyse des schémas sources, le mapping interactif vers les entités cibles, et la génération de pipelines et workflows conformes.
+
+\medskip
+\textbf{Perspectives d'évolution} :
+
+\begin{itemize}
+  \item Extension du framework à d'autres entités complexes d'Axelor (Manufacturing Order, Stock Move).
+  \item Enrichissement des skills par apprentissage à partir des imports précédents (patterns récurrents de mapping).
+  \item Généralisation du spectre d'autonomie à d'autres ERP open source (Odoo, ERPNext).
+  \item Intégration d'un mécanisme de validation pré-import pour détecter les anomalies avant exécution du pipeline.
+  \item Publication du framework comme projet open source réutilisable par la communauté Apache Hop.
+\end{itemize}
+
+\end{document}

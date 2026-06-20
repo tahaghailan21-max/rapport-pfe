@@ -1,0 +1,586 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global}
+    \entry{axelor_erp}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=6ae0b1e03338eea1bc99dc03f18cf24d}{%
+           family={{Axelor}},
+           familyi={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{6ae0b1e03338eea1bc99dc03f18cf24d}
+      \strng{fullhash}{6ae0b1e03338eea1bc99dc03f18cf24d}
+      \strng{bibnamehash}{6ae0b1e03338eea1bc99dc03f18cf24d}
+      \strng{authorbibnamehash}{6ae0b1e03338eea1bc99dc03f18cf24d}
+      \strng{authornamehash}{6ae0b1e03338eea1bc99dc03f18cf24d}
+      \strng{authorfullhash}{6ae0b1e03338eea1bc99dc03f18cf24d}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Consulté le 15 juin 2026}
+      \field{title}{Axelor — ERP Open Source}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://axelor.com/
+      \endverb
+      \verb{url}
+      \verb https://axelor.com/
+      \endverb
+    \endentry
+    \entry{hibernate2024}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=a82007c47b25723539a00ff94e8b3d27}{%
+           family={{Red Hat}},
+           familyi={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{a82007c47b25723539a00ff94e8b3d27}
+      \strng{fullhash}{a82007c47b25723539a00ff94e8b3d27}
+      \strng{bibnamehash}{a82007c47b25723539a00ff94e8b3d27}
+      \strng{authorbibnamehash}{a82007c47b25723539a00ff94e8b3d27}
+      \strng{authornamehash}{a82007c47b25723539a00ff94e8b3d27}
+      \strng{authorfullhash}{a82007c47b25723539a00ff94e8b3d27}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Consulté le 02 mars 2026}
+      \field{title}{Hibernate ORM Documentation}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://hibernate.org/orm/documentation/
+      \endverb
+      \verb{url}
+      \verb https://hibernate.org/orm/documentation/
+      \endverb
+    \endentry
+    \entry{postgresql_doc}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=36423acfb135ffe286ea438eafcb0bc6}{%
+           family={{PostgreSQL Global Development Group}},
+           familyi={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{36423acfb135ffe286ea438eafcb0bc6}
+      \strng{fullhash}{36423acfb135ffe286ea438eafcb0bc6}
+      \strng{bibnamehash}{36423acfb135ffe286ea438eafcb0bc6}
+      \strng{authorbibnamehash}{36423acfb135ffe286ea438eafcb0bc6}
+      \strng{authornamehash}{36423acfb135ffe286ea438eafcb0bc6}
+      \strng{authorfullhash}{36423acfb135ffe286ea438eafcb0bc6}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Consulté le 20 avril 2026}
+      \field{title}{PostgreSQL 15 Documentation}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://www.postgresql.org/docs/15/
+      \endverb
+      \verb{url}
+      \verb https://www.postgresql.org/docs/15/
+      \endverb
+    \endentry
+    \entry{uml}{book}{}
+      \name{author}{3}{}{%
+        {{hash=b8ace965f1ffa84dd4512f7e64c62d75}{%
+           family={Rumbaugh},
+           familyi={R\bibinitperiod},
+           given={James},
+           giveni={J\bibinitperiod}}}%
+        {{hash=3e8f03cc324f52193ab00c1fab4df61a}{%
+           family={Jacobson},
+           familyi={J\bibinitperiod},
+           given={Ivar},
+           giveni={I\bibinitperiod}}}%
+        {{hash=e4f07715269e006a4d4a4efa3ce3f996}{%
+           family={Booch},
+           familyi={B\bibinitperiod},
+           given={Grady},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Boston}%
+      }
+      \list{publisher}{1}{%
+        {Addison-Wesley}%
+      }
+      \strng{namehash}{6385cf8d48142625a33e857e6f69df87}
+      \strng{fullhash}{6385cf8d48142625a33e857e6f69df87}
+      \strng{bibnamehash}{6385cf8d48142625a33e857e6f69df87}
+      \strng{authorbibnamehash}{6385cf8d48142625a33e857e6f69df87}
+      \strng{authornamehash}{6385cf8d48142625a33e857e6f69df87}
+      \strng{authorfullhash}{6385cf8d48142625a33e857e6f69df87}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{2}
+      \field{isbn}{978-0321245625}
+      \field{title}{The Unified Modeling Language Reference Manual}
+      \field{year}{2004}
+    \endentry
+    \entry{vassiliadis2009}{article}{}
+      \name{author}{3}{}{%
+        {{hash=9e7a0590d59945c560f5f4d194ea78e0}{%
+           family={Vassiliadis},
+           familyi={V\bibinitperiod},
+           given={Panos},
+           giveni={P\bibinitperiod}}}%
+        {{hash=2334fe96ca8118d664a7c04745bea2ef}{%
+           family={Simitsis},
+           familyi={S\bibinitperiod},
+           given={Alkis},
+           giveni={A\bibinitperiod}}}%
+        {{hash=c6170c8d37eb3ff31ea97b6721677bcf}{%
+           family={Skiadopoulos},
+           familyi={S\bibinitperiod},
+           given={Spiros},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{2bf299b44d35ec21df64849d324b6d47}
+      \strng{fullhash}{2bf299b44d35ec21df64849d324b6d47}
+      \strng{bibnamehash}{2bf299b44d35ec21df64849d324b6d47}
+      \strng{authorbibnamehash}{2bf299b44d35ec21df64849d324b6d47}
+      \strng{authornamehash}{2bf299b44d35ec21df64849d324b6d47}
+      \strng{authorfullhash}{2bf299b44d35ec21df64849d324b6d47}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{International Journal of Data Warehousing and Mining}
+      \field{number}{3}
+      \field{title}{A Survey of Extract-Transform-Load Technology}
+      \field{volume}{5}
+      \field{year}{2009}
+      \field{pages}{1\bibrangedash 27}
+      \range{pages}{27}
+    \endentry
+    \entry{hop-doc}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=8b499b5be8914246b406785e1327dbb3}{%
+           family={{Apache Software Foundation}},
+           familyi={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{8b499b5be8914246b406785e1327dbb3}
+      \strng{fullhash}{8b499b5be8914246b406785e1327dbb3}
+      \strng{bibnamehash}{8b499b5be8914246b406785e1327dbb3}
+      \strng{authorbibnamehash}{8b499b5be8914246b406785e1327dbb3}
+      \strng{authornamehash}{8b499b5be8914246b406785e1327dbb3}
+      \strng{authorfullhash}{8b499b5be8914246b406785e1327dbb3}
+      \field{extraname}{1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Consulté le 09 mars 2026}
+      \field{title}{Apache Hop Documentation}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://hop.apache.org/manual/latest/
+      \endverb
+      \verb{url}
+      \verb https://hop.apache.org/manual/latest/
+      \endverb
+    \endentry
+    \entry{talend-doc}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=1f491d69aa18cdcc8de1b5f565416e9b}{%
+           family={{Qlik Technologies}},
+           familyi={Q\bibinitperiod}}}%
+      }
+      \strng{namehash}{1f491d69aa18cdcc8de1b5f565416e9b}
+      \strng{fullhash}{1f491d69aa18cdcc8de1b5f565416e9b}
+      \strng{bibnamehash}{1f491d69aa18cdcc8de1b5f565416e9b}
+      \strng{authorbibnamehash}{1f491d69aa18cdcc8de1b5f565416e9b}
+      \strng{authornamehash}{1f491d69aa18cdcc8de1b5f565416e9b}
+      \strng{authorfullhash}{1f491d69aa18cdcc8de1b5f565416e9b}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Consulté le 16 mars 2026}
+      \field{title}{Talend Open Studio for Data Integration — Documentation}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://help.talend.com/r/en-US/8.0/talend-open-studio-for-data-integration/
+      \endverb
+      \verb{url}
+      \verb https://help.talend.com/r/en-US/8.0/talend-open-studio-for-data-integration/
+      \endverb
+    \endentry
+    \entry{nifi-doc}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=8b499b5be8914246b406785e1327dbb3}{%
+           family={{Apache Software Foundation}},
+           familyi={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{8b499b5be8914246b406785e1327dbb3}
+      \strng{fullhash}{8b499b5be8914246b406785e1327dbb3}
+      \strng{bibnamehash}{8b499b5be8914246b406785e1327dbb3}
+      \strng{authorbibnamehash}{8b499b5be8914246b406785e1327dbb3}
+      \strng{authornamehash}{8b499b5be8914246b406785e1327dbb3}
+      \strng{authorfullhash}{8b499b5be8914246b406785e1327dbb3}
+      \field{extraname}{2}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Consulté le 16 mars 2026}
+      \field{title}{Apache NiFi Documentation}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://nifi.apache.org/documentation.html
+      \endverb
+      \verb{url}
+      \verb https://nifi.apache.org/documentation.html
+      \endverb
+    \endentry
+    \entry{brown2020}{inproceedings}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{10}{}{%
+        {{hash=7c16e8d36475e58d4f2d161e6ecb7704}{%
+           family={Brown},
+           familyi={B\bibinitperiod},
+           given={Tom\bibnamedelima B.},
+           giveni={T\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+        {{hash=d4543c3bcd6aaf414da4296b349603e5}{%
+           family={Mann},
+           familyi={M\bibinitperiod},
+           given={Benjamin},
+           giveni={B\bibinitperiod}}}%
+        {{hash=9ac58bd43db2434e8e1ffd6182c3fcda}{%
+           family={Ryder},
+           familyi={R\bibinitperiod},
+           given={Nick},
+           giveni={N\bibinitperiod}}}%
+        {{hash=9ed243177743da3e650f1cff6376bb3c}{%
+           family={Subbiah},
+           familyi={S\bibinitperiod},
+           given={Melanie},
+           giveni={M\bibinitperiod}}}%
+        {{hash=9e85370e215d552f72c95a2b63a37802}{%
+           family={Kaplan},
+           familyi={K\bibinitperiod},
+           given={Jared},
+           giveni={J\bibinitperiod}}}%
+        {{hash=4164e43d8cf919f5e3f8d80f5ea23f36}{%
+           family={Dhariwal},
+           familyi={D\bibinitperiod},
+           given={Prafulla},
+           giveni={P\bibinitperiod}}}%
+        {{hash=4ca421ceeb5b516dd8fc64bea5a23f2a}{%
+           family={Neelakantan},
+           familyi={N\bibinitperiod},
+           given={Arvind},
+           giveni={A\bibinitperiod}}}%
+        {{hash=ab5d7d7b9cfeaad635c4a60e8950d7dd}{%
+           family={Shyam},
+           familyi={S\bibinitperiod},
+           given={Pranav},
+           giveni={P\bibinitperiod}}}%
+        {{hash=3c1d9a663596faaf544c1a65aac581be}{%
+           family={Sastry},
+           familyi={S\bibinitperiod},
+           given={Girish},
+           giveni={G\bibinitperiod}}}%
+        {{hash=1e84eff933be9f4887bf369cf181bf12}{%
+           family={Askell},
+           familyi={A\bibinitperiod},
+           given={Amanda},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{e04bb4a0ae057c5f0efdb48ae692d1a4}
+      \strng{fullhash}{7461595e3e0fb4884afbe72c86096e60}
+      \strng{bibnamehash}{e04bb4a0ae057c5f0efdb48ae692d1a4}
+      \strng{authorbibnamehash}{e04bb4a0ae057c5f0efdb48ae692d1a4}
+      \strng{authornamehash}{e04bb4a0ae057c5f0efdb48ae692d1a4}
+      \strng{authorfullhash}{7461595e3e0fb4884afbe72c86096e60}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Advances in Neural Information Processing Systems (NeurIPS)}
+      \field{title}{Language Models are Few-Shot Learners}
+      \field{volume}{33}
+      \field{year}{2020}
+      \field{pages}{1877\bibrangedash 1901}
+      \range{pages}{25}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2005.14165
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2005.14165
+      \endverb
+    \endentry
+    \entry{chen2023}{article}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{1}{}{%
+        {{hash=fb15a691583ec94aafe0be6e7da4878f}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Mark},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{2fd8085024f85a70768cd686d429090e}
+      \strng{fullhash}{2fd8085024f85a70768cd686d429090e}
+      \strng{bibnamehash}{2fd8085024f85a70768cd686d429090e}
+      \strng{authorbibnamehash}{2fd8085024f85a70768cd686d429090e}
+      \strng{authornamehash}{2fd8085024f85a70768cd686d429090e}
+      \strng{authorfullhash}{2fd8085024f85a70768cd686d429090e}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{arXiv preprint arXiv:2302.06590}
+      \field{title}{The Impact of AI on Developer Productivity: Evidence from GitHub Copilot}
+      \field{year}{2023}
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2302.06590
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2302.06590
+      \endverb
+    \endentry
+    \entry{anthropic_claude}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=f431db65cea024a5f19eab835afefee2}{%
+           family={{Anthropic}},
+           familyi={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{f431db65cea024a5f19eab835afefee2}
+      \strng{fullhash}{f431db65cea024a5f19eab835afefee2}
+      \strng{bibnamehash}{f431db65cea024a5f19eab835afefee2}
+      \strng{authorbibnamehash}{f431db65cea024a5f19eab835afefee2}
+      \strng{authornamehash}{f431db65cea024a5f19eab835afefee2}
+      \strng{authorfullhash}{f431db65cea024a5f19eab835afefee2}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Consulté le 23 mars 2026}
+      \field{title}{Claude Code Documentation}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://docs.anthropic.com/en/docs/claude-code
+      \endverb
+      \verb{url}
+      \verb https://docs.anthropic.com/en/docs/claude-code
+      \endverb
+    \endentry
+    \entry{openai_codex}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=0523b13262b12c215d8009938f5c14f1}{%
+           family={{OpenAI}},
+           familyi={O\bibinitperiod}}}%
+      }
+      \strng{namehash}{0523b13262b12c215d8009938f5c14f1}
+      \strng{fullhash}{0523b13262b12c215d8009938f5c14f1}
+      \strng{bibnamehash}{0523b13262b12c215d8009938f5c14f1}
+      \strng{authorbibnamehash}{0523b13262b12c215d8009938f5c14f1}
+      \strng{authornamehash}{0523b13262b12c215d8009938f5c14f1}
+      \strng{authorfullhash}{0523b13262b12c215d8009938f5c14f1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Consulté le 06 avril 2026}
+      \field{title}{Codex CLI Documentation}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://github.com/openai/codex
+      \endverb
+      \verb{url}
+      \verb https://github.com/openai/codex
+      \endverb
+    \endentry
+    \entry{google_gemini_cli}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=0f98f9c132af315a916cf1272843fc7b}{%
+           family={{Google DeepMind}},
+           familyi={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{0f98f9c132af315a916cf1272843fc7b}
+      \strng{fullhash}{0f98f9c132af315a916cf1272843fc7b}
+      \strng{bibnamehash}{0f98f9c132af315a916cf1272843fc7b}
+      \strng{authorbibnamehash}{0f98f9c132af315a916cf1272843fc7b}
+      \strng{authornamehash}{0f98f9c132af315a916cf1272843fc7b}
+      \strng{authorfullhash}{0f98f9c132af315a916cf1272843fc7b}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Consulté le 06 avril 2026}
+      \field{title}{Gemini CLI Documentation}
+      \field{year}{2025}
+      \verb{urlraw}
+      \verb https://ai.google.dev/gemini-api/docs/gemini-cli
+      \endverb
+      \verb{url}
+      \verb https://ai.google.dev/gemini-api/docs/gemini-cli
+      \endverb
+    \endentry
+    \entry{artificial-analysis}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=60a0f8adc747278c54843aa94bef2613}{%
+           family={{Artificial Analysis}},
+           familyi={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{60a0f8adc747278c54843aa94bef2613}
+      \strng{fullhash}{60a0f8adc747278c54843aa94bef2613}
+      \strng{bibnamehash}{60a0f8adc747278c54843aa94bef2613}
+      \strng{authorbibnamehash}{60a0f8adc747278c54843aa94bef2613}
+      \strng{authornamehash}{60a0f8adc747278c54843aa94bef2613}
+      \strng{authorfullhash}{60a0f8adc747278c54843aa94bef2613}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Consulté le 30 mars 2026}
+      \field{title}{LLM Coding Benchmark Leaderboard — June 2026}
+      \field{year}{2026}
+      \verb{urlraw}
+      \verb https://artificialanalysis.ai/
+      \endverb
+      \verb{url}
+      \verb https://artificialanalysis.ai/
+      \endverb
+    \endentry
+    \entry{fastapi_doc}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=f5305ee02dd2a5c6215b53401b4a10b0}{%
+           family={Ramírez},
+           familyi={R\bibinitperiod},
+           given={Sebastián},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{f5305ee02dd2a5c6215b53401b4a10b0}
+      \strng{fullhash}{f5305ee02dd2a5c6215b53401b4a10b0}
+      \strng{bibnamehash}{f5305ee02dd2a5c6215b53401b4a10b0}
+      \strng{authorbibnamehash}{f5305ee02dd2a5c6215b53401b4a10b0}
+      \strng{authornamehash}{f5305ee02dd2a5c6215b53401b4a10b0}
+      \strng{authorfullhash}{f5305ee02dd2a5c6215b53401b4a10b0}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Consulté le 13 avril 2026}
+      \field{title}{FastAPI Documentation}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://fastapi.tiangolo.com/
+      \endverb
+      \verb{url}
+      \verb https://fastapi.tiangolo.com/
+      \endverb
+    \endentry
+    \entry{react_doc}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=6c56f762d9ebe73063cd2d157e97351f}{%
+           family={{Meta Open Source}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{6c56f762d9ebe73063cd2d157e97351f}
+      \strng{fullhash}{6c56f762d9ebe73063cd2d157e97351f}
+      \strng{bibnamehash}{6c56f762d9ebe73063cd2d157e97351f}
+      \strng{authorbibnamehash}{6c56f762d9ebe73063cd2d157e97351f}
+      \strng{authornamehash}{6c56f762d9ebe73063cd2d157e97351f}
+      \strng{authorfullhash}{6c56f762d9ebe73063cd2d157e97351f}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Consulté le 13 avril 2026}
+      \field{title}{React Documentation}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://react.dev/
+      \endverb
+      \verb{url}
+      \verb https://react.dev/
+      \endverb
+    \endentry
+    \entry{xtermjs}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=233a5aec7d4a4daa988dd0e2a057c1f9}{%
+           family={{xterm.js Contributors}},
+           familyi={x\bibinitperiod}}}%
+      }
+      \strng{namehash}{233a5aec7d4a4daa988dd0e2a057c1f9}
+      \strng{fullhash}{233a5aec7d4a4daa988dd0e2a057c1f9}
+      \strng{bibnamehash}{233a5aec7d4a4daa988dd0e2a057c1f9}
+      \strng{authorbibnamehash}{233a5aec7d4a4daa988dd0e2a057c1f9}
+      \strng{authornamehash}{233a5aec7d4a4daa988dd0e2a057c1f9}
+      \strng{authorfullhash}{233a5aec7d4a4daa988dd0e2a057c1f9}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Consulté le 20 avril 2026}
+      \field{title}{xterm.js — A terminal component for the web}
+      \field{year}{2024}
+      \verb{urlraw}
+      \verb https://xtermjs.org/
+      \endverb
+      \verb{url}
+      \verb https://xtermjs.org/
+      \endverb
+    \endentry
+    \entry{websocket_rfc}{misc}{}
+      \name{author}{2}{}{%
+        {{hash=cdf249d29ccc7edcf24f6bfef0893ebd}{%
+           family={Fette},
+           familyi={F\bibinitperiod},
+           given={Ian},
+           giveni={I\bibinitperiod}}}%
+        {{hash=8fa97ca9bca09f72482fe5f985ecef60}{%
+           family={Melnikov},
+           familyi={M\bibinitperiod},
+           given={Alexey},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {Internet Engineering Task Force}%
+      }
+      \strng{namehash}{a413dbe318e95f69f8330db28642e805}
+      \strng{fullhash}{a413dbe318e95f69f8330db28642e805}
+      \strng{bibnamehash}{a413dbe318e95f69f8330db28642e805}
+      \strng{authorbibnamehash}{a413dbe318e95f69f8330db28642e805}
+      \strng{authornamehash}{a413dbe318e95f69f8330db28642e805}
+      \strng{authorfullhash}{a413dbe318e95f69f8330db28642e805}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Consulté le 04 mai 2026}
+      \field{title}{{RFC 6455}: The WebSocket Protocol}
+      \field{year}{2011}
+      \verb{urlraw}
+      \verb https://datatracker.ietf.org/doc/html/rfc6455
+      \endverb
+      \verb{url}
+      \verb https://datatracker.ietf.org/doc/html/rfc6455
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

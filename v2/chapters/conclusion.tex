@@ -1,0 +1,65 @@
+\chapter*{Conclusion Générale et Perspectives}
+\addcontentsline{toc}{chapter}{Conclusion Générale et Perspectives}
+\markboth{Conclusion Générale et Perspectives}{Conclusion Générale et Perspectives}
+
+\vspace{0.5cm}
+
+Ce projet de fin d'études a porté sur la conception et la réalisation d'un framework ETL à gateways de décision pour l'import ERP, développé au sein de la société Axelor. Face à la prolifération de scripts Java non réutilisables imposant un effort de développement conséquent à chaque nouveau projet client, l'objectif était de proposer une solution standardisée, déclarative et assistée par intelligence artificielle, permettant à tout consultant fonctionnel d'importer des données dans Axelor Open Suite sans compétences en développement Java.
+
+% ─────────────────────────────────────────────────────────────
+\section*{Rappel de la problématique et des objectifs}
+% ─────────────────────────────────────────────────────────────
+
+La problématique initiale portait sur l'absence de standardisation des migrations de données au sein des projets Axelor : chaque client nécessitait un ensemble de scripts Java développés sur mesure, non réutilisables d'un projet à l'autre, inaccessibles aux consultants fonctionnels et impossibles à maintenir sans compétences en développement Java. L'analyse de trois projets réels — \textit{bolt-app} (23~scripts), \textit{neodyme} (20~scripts) et \textit{xelians} (3~configurations XML) — a mis en évidence le coût humain de cette situation et l'urgence d'une capitalisation transversale.
+L'objectif du projet était de concevoir un framework ETL basé sur Apache Hop, couvrant les quatre domaines fonctionnels essentiels d'Axelor Open Suite — Base, CRM, Ventes et Achats —, de l'enrichir par trois \textit{skills} d'intelligence artificielle pour assister la configuration des pipelines, et de le rendre accessible à travers une application web de mapping, l'\textit{Axelor Mapper}.
+
+% ─────────────────────────────────────────────────────────────
+\section*{Bilan des réalisations}
+% ─────────────────────────────────────────────────────────────
+
+Les objectifs fixés en début de projet ont été atteints. La solution livrée apporte :
+
+\begin{itemize}
+  \item \textbf{un framework ETL réutilisable et paramétrable}, couvrant l'import de quatre entités Axelor — Produit, Partenaire, Commande de vente et Facture — à travers des pipelines Apache Hop standardisés et modulaires, organisés selon une architecture en deux étapes (consolidation puis injection) garantissant la cohérence transactionnelle ;
+  \item \textbf{un assistant IA de configuration}, composé de trois \textit{skills} Claude — \texttt{analyze-and-map-entity}, \texttt{generate-pipeline} et \texttt{generate-workflow} — qui automatisent l'analyse du fichier source, la résolution interactive des clés étrangères et la génération des fichiers \texttt{.hpl}/\texttt{.hwf} ;
+  \item \textbf{un contrat d'interface déclaratif}, le manifeste JSON, servant d'artefact intermédiaire entre l'analyse conversationnelle et la génération des pipelines, versionnable sous Git et régénérable à la demande sans ré-analyse ;
+  \item \textbf{une application web accessible}, l'\textit{Axelor Mapper}, offrant au consultant une interface graphique pour sélectionner l'entité cible, déposer le fichier source et piloter la session conversationnelle Claude via un terminal PTY intégré ;
+  \item \textbf{une validation complète sur jeu de données \textit{golden}}, confirmant la conformité des imports, l'idempotence des pipelines et des performances nettement supérieures à l'import natif Axelor sur les volumes testés.
+\end{itemize}
+
+La validation conduite sur un jeu de données réaliste — 75~produits, 68~partenaires, 1000~commandes de vente et 1000~factures avec ventilation comptable — ainsi que les mesures de performance recueillies, ont confirmé la fiabilité de la solution et sa conformité à l'ensemble des besoins fonctionnels et non fonctionnels exprimés.
+
+% ─────────────────────────────────────────────────────────────
+\section*{Apports du stage}
+% ─────────────────────────────────────────────────────────────
+
+Ce stage a constitué une expérience particulièrement enrichissante, tant sur le plan technique que professionnel.
+Il a permis de :
+
+\begin{itemize}
+  \item maîtriser l'architecture et les conventions d'Apache Hop dans un contexte d'intégration ERP réel, en appréhendant les subtilités des \textit{transforms}, des workflows et des contraintes de contournement de l'ORM Axelor ;
+  \item acquérir une expertise concrète en \textit{prompt engineering} appliqué à la génération de code technique structuré, notamment la conception de \textit{skills} conversationnels capables de produire du XML Hop valide à partir d'une description déclarative ;
+  \item développer des compétences en développement \textit{full-stack} : conception d'une API FastAPI, d'une interface React avec terminal intégré xterm.js, et orchestration d'une session Claude via PTY WebSocket ;
+  \item renforcer la capacité à analyser un besoin métier complexe — ici la migration de données ERP avec gestion des clés étrangères, des contraintes d'intégrité référentielle et des séquences PostgreSQL — et à le traduire en une solution technique structurée, testée et documentée ;
+  \item s'intégrer au sein d'une équipe de consultants Axelor et adopter les pratiques professionnelles de gestion de projet incrémental, de versionnement et de livraison itérative.
+\end{itemize}
+
+Cette immersion au c\oe{}ur d'un projet à forte valeur métier a consolidé une vision d'ensemble de l'ingénierie des données et de l'intégration de systèmes d'information, et constitue un tremplin précieux vers une carrière dans la mise en \oe{}uvre de solutions ERP et d'architectures ETL.
+
+% ─────────────────────────────────────────────────────────────
+\section*{Perspectives d'évolution}
+% ─────────────────────────────────────────────────────────────
+
+La solution réalisée constitue un socle robuste sur lequel plusieurs évolutions à forte valeur ajoutée sont d'ores et déjà envisagées.
+
+L'axe d'évolution prioritaire est l'extension du framework à de nouveaux domaines fonctionnels d'Axelor Open Suite, notamment les \textbf{ordres de fabrication} (\textit{Manufacturing Order}) et les \textbf{mouvements de stock} (\textit{Stock Move}). Ces entités présentent des contraintes de cohérence plus exigeantes — liens avec les nomenclatures, les emplacements et les lots de traçabilité — et constitueront un véritable test de la généricité de l'architecture de \textit{gateway pipeline}.
+
+Un second axe majeur concerne l'\textbf{élargissement des sources de données} supportées. La version actuelle traite exclusivement des fichiers CSV ; or, les projets d'intégration Axelor mobilisent des sources bien plus variées : fichiers Excel, bases de données relationnelles externes (PostgreSQL, MySQL), bases documentaires (MongoDB) ou encore exports XML issus d'autres ERP. Étendre le framework à ces formats permettrait de couvrir l'essentiel des contextes clients sans modifier les pipelines d'import aval.
+
+Ces deux axes s'accompagnent d'un troisième, étroitement lié : l'intégration d'un \textbf{rapport de qualité de données} avant import. Ce mécanisme permettrait de détecter et de qualifier les anomalies de chaque ligne source — champs requis manquants, clés étrangères inexistantes, formats non conformes — avant toute écriture en base de données, réduisant significativement les itérations de correction et offrant au consultant une visibilité complète sur l'état de ses données avant toute mise en production.
+
+D'autres pistes complètent cette vision : l'amélioration des \textit{skills} IA par capitalisation sur l'historique des mappings réussis pour proposer des configurations de plus en plus pertinentes, la \textbf{publication en open source} du framework afin de favoriser les contributions de la communauté Axelor, et la \textbf{généralisation au-delà d'Axelor} par abstraction de la couche de mapping pour supporter d'autres ERP open source tels qu'Odoo ou ERPNext.
+
+\vspace{0.5cm}
+
+En définitive, ce projet a permis de livrer un framework ETL pleinement opérationnel, aligné sur les besoins réels des projets d'intégration Axelor, tout en traçant une trajectoire d'évolution ambitieuse vers un outillage intelligent et communautaire de migration de données ERP.

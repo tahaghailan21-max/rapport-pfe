@@ -1,0 +1,202 @@
+\chapter{Architecture technique}
+\label{chap:architecture}
+
+Ce chapitre présente les choix technologiques effectués, l'architecture globale de la solution et les mesures de sécurité adoptées.
+
+%% ============================================================
+\section{Benchmark des technologies}
+\label{sec:benchmark}
+%% ============================================================
+
+Cette section présente les études comparatives réalisées pour justifier les choix technologiques du framework.
+
+\subsection{Outil ETL}
+
+Le choix de l'outil ETL est déterminant car il conditionne la manière dont les pipelines d'import sont conçus, maintenus et — dans notre cas — générés automatiquement par IA. Les processus ETL constituent un domaine central des architectures d'intégration de données~\cite{vassiliadis2009}. Trois alternatives ont été évaluées :
+
+\begin{itemize}
+    \item \textbf{Apache Hop} — plateforme ETL open source (licence Apache 2.0), fork modernisé de Kettle créé en 2020 par ses auteurs originaux. Les pipelines sont définis en fichiers XML (\texttt{.hpl}), exécutables en ligne de commande via \texttt{hop-run.sh}.
+    \item \textbf{Talend Open Studio} — outil ETL en modèle freemium. L'interface graphique génère du code Java compilé (.jar). Le versionnement est complexe car chaque modification regenere l'intégralité du code source.
+    \item \textbf{Apache NiFi} — plateforme de data flow temps réel, conçue pour le routage et la distribution de données en streaming (Kafka, IoT, API). Fonctionne comme un serveur web permanent avec une interface de configuration.
+\end{itemize}
+
+Les critères de comparaison retenus sont les suivants :
+
+\begin{itemize}
+    \item \textbf{Format des pipelines~:} le format dans lequel les pipelines sont stockés sur disque. Un format texte structuré (XML) est essentiel pour notre projet car il permet la génération automatique par un LLM et le versionnement ligne par ligne dans Git.
+    \item \textbf{Généreable par LLM~:} la capacité d'un modèle de langage à produire un pipeline valide à partir d'instructions. Nécessite un format texte lisible avec une structure prévisible.
+    \item \textbf{Pattern upsert natif~:} la disponibilité d'un composant intégré qui vérifie l'existence d'un enregistrement avant de décider entre INSERT et UPDATE — sans nécessiter de scripting custom.
+    \item \textbf{Exécution CLI sans serveur~:} la possibilité d'exécuter un pipeline en une commande terminal, sans qu'un serveur doive tourner en permanence.
+    \item \textbf{Licence~:} la compatibilité avec l'écosystème open source d'Axelor (AGPLv3).
+\end{itemize}
+
+\begin{table}[H]
+  \centering
+  \renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{p{3.5cm} p{3.2cm} p{3.2cm} p{3.2cm}}
+    \toprule
+    \rowcolor{gray!20}
+    \textbf{Critère} & \textbf{Apache Hop} & \textbf{Talend} & \textbf{Apache NiFi} \\
+    \midrule
+    \rowcolor{gray!5}
+    Format des pipelines & XML lisible (\texttt{.hpl}) & Java compilé (.jar) & JSON interne (binaire) \\
+    Généreable par LLM   & Oui              & Non                & Non \\
+    \rowcolor{gray!5}
+    Pattern upsert natif & Oui (Insert/Update) & Oui (tMap)      & Non (scripting requis) \\
+    Exécution CLI        & Oui (\texttt{hop-run.sh}) & Oui (jar)  & Non (serveur web) \\
+    \rowcolor{gray!5}
+    Versionnement Git    & Natif (1 fichier = 1 pipeline) & Complexe (regenere tout) & Difficile (JSON imbriqué) \\
+    Licence              & Apache 2.0       & Freemium           & Apache 2.0 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Comparaison des outils ETL (sources~: documentation officielle Apache Hop~\cite{hop-doc}, Talend~\cite{talend-doc}, Apache NiFi~\cite{nifi-doc})}
+  \label{tab:benchmark-etl}
+\end{table}
+
+\textbf{Choix retenu~:} Apache Hop. Le critère déterminant est la \textbf{générabilité par LLM}~: les pipelines étant des fichiers XML avec une structure prévisible, un agent IA peut les lire comme contexte et en produire de nouveaux. Aucune autre solution ne permet cela — Talend génère du bytecode Java inexploitable, et NiFi stocke sa configuration dans un format interne non conçu pour la production programmatique. De plus, Hop offre nativement le pattern upsert (composant Insert/Update) et l'exécution en ligne de commande, deux prérequis de notre architecture.
+
+\subsection{Agent IA de génération de code}
+
+Le framework nécessite un agent IA capable de générer du code structuré (XML Apache Hop, JSON) à partir d'instructions en langage naturel. Les grands modèles de langage ont démontré leur capacité à générer du code à partir d'exemples~\cite{brown2020}, ouvrant la voie à des agents d'assistance au développement~\cite{chen2023}. En 2025-2026, trois agents de code en terminal sont disponibles :
+
+\begin{itemize}
+    \item \textbf{Claude Code (Anthropic)} — CLI avec système de \textit{slash commands} intégré (fichiers \texttt{.md} dans \texttt{.claude/commands/}) permettant de structurer les prompts en skills modulaires. Supporte le prompt caching~\cite{anthropic_claude}.
+    \item \textbf{Codex CLI (OpenAI)} — agent open source (MIT), basé sur GPT-5.5. Exécution locale en terminal~\cite{openai_codex}.
+    \item \textbf{Gemini CLI (Google)} — agent open source (Apache 2.0), basé sur Gemini 3.1 Pro. Accès gratuit (1000 requêtes/jour)~\cite{google_gemini_cli}.
+\end{itemize}
+
+Le tableau~\ref{tab:benchmark-ia} présente une comparaison basée sur les benchmarks indépendants d'Artificial Analysis (juin 2026).
+
+\begin{table}[H]
+  \centering
+  \renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{p{3.5cm} p{3cm} p{3cm} p{3cm}}
+    \toprule
+    \rowcolor{gray!20}
+    \textbf{Critère} & \textbf{Claude Code} & \textbf{Codex CLI} & \textbf{Gemini CLI} \\
+    \midrule
+    \rowcolor{gray!5}
+    Coding Agent Index  & 77              & 76                & — \\
+    Terminal-Bench Hard & 63\%            & 61\%              & 54\% \\
+    \rowcolor{gray!5}
+    Intelligence Index  & 65              & 60                & 57 \\
+    Prix (USD/1M tokens) & 7.7            & 4.3               & 1.7 \\
+    \rowcolor{gray!5}
+    Contexte max (tokens) & 200K--1M      & 128K--1M          & 1M \\
+    \bottomrule
+  \end{tabular}
+  \caption{Comparaison des agents IA de code (source~: Artificial Analysis, juin 2026~\cite{artificial-analysis})}
+  \label{tab:benchmark-ia}
+\end{table}
+
+\textbf{Constat~:} Les trois agents affichent des performances très proches sur les benchmarks de code agentic (77 vs 76 pour Claude Code et Codex). Aucun ne se démarque de manière décisive sur la qualité de génération.
+
+\textbf{Choix retenu~:} Claude Code. Les trois agents étant comparables en performance, le choix s'est fait sur un critère pragmatique~: l'entreprise disposait déjà d'un abonnement Anthropic actif et d'une familiarité avec l'écosystème Claude au moment du démarrage du projet.
+
+\subsection{Stack applicative}
+
+\begin{table}[H]
+  \centering
+  \renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{p{3cm} p{4cm} p{6cm}}
+    \toprule
+    \rowcolor{gray!20}
+    \textbf{Composant} & \textbf{Technologie} & \textbf{Justification} \\
+    \midrule
+    \rowcolor{gray!5}
+    Backend   & FastAPI (Python)        & Prototypage rapide, manipulation CLI/subprocess native \\
+    Frontend  & React + TypeScript      & Écosystème riche, xterm.js pour le terminal \\
+    \rowcolor{gray!5}
+    Terminal  & xterm.js + WebSocket    & Émulation PTY dans le navigateur \\
+    Base de données & PostgreSQL        & Imposé par Axelor Open Suite \\
+    \rowcolor{gray!5}
+    ETL Engine & Apache Hop 2.x        & Pipelines XML déclaratifs \\
+    Agent IA  & Claude CLI (Anthropic)  & Abonnement existant en entreprise \\
+    \bottomrule
+  \end{tabular}
+  \caption{Stack technique retenue}
+  \label{tab:stack-technique}
+\end{table}
+
+\textbf{Backend (FastAPI/Python)~:} Python a été retenu car le backend doit principalement orchestrer des appels CLI (lancer Claude via \texttt{subprocess}, spawner des PTY, exécuter \texttt{hop-run.sh}). Python offre une manipulation native des processus système et un prototypage rapide adapté à un projet de recherche~\cite{fastapi_doc}.
+
+\textbf{Frontend (React + xterm.js)~:} Le choix de React~\cite{react_doc} n'est pas motivé par une contrainte technique particulière — tout framework frontend moderne aurait convenu. La bibliothèque xterm.js~\cite{xtermjs}, utilisée pour l'émulation du terminal dans le navigateur via une communication WebSocket~\cite{websocket_rfc}, est indépendante du framework.
+
+\textbf{PostgreSQL~:} Imposé par Axelor Open Suite — c'est la seule base supportée par l'ERP. Il n'y a pas de choix à faire ici.
+
+%% ============================================================
+\section{Architecture globale de la solution}
+\label{sec:archi-globale}
+%% ============================================================
+
+Le framework suit un flux linéaire allant du fichier CSV source jusqu'à l'insertion en base de données~:
+
+\begin{center}
+\textbf{CSV} $\longrightarrow$ \textbf{Agent IA} (analyse + manifest) $\longrightarrow$ \textbf{Agent IA} (génération pipelines) $\longrightarrow$ \textbf{Apache Hop} (exécution) $\longrightarrow$ \textbf{PostgreSQL}
+\end{center}
+
+Le processus se décompose en trois étapes principales~:
+
+\begin{enumerate}
+    \item \textbf{Analyse et mapping~:} le consultant upload un CSV dans l'application Mapper. L'agent IA analyse la structure du fichier, identifie les colonnes, résout les dépendances FK en interrogeant la base cible, et produit un \textbf{manifeste JSON} décrivant le mapping complet.
+    \item \textbf{Génération des pipelines~:} à partir du manifeste, l'agent IA génère les fichiers XML Apache Hop (.hpl) en s'appuyant sur des pipelines de référence existants comme modèles.
+    \item \textbf{Exécution~:} les pipelines générés sont exécutés par le moteur Apache Hop via \texttt{hop-run.sh}, qui lit le CSV, applique les transformations et insère les données dans PostgreSQL.
+\end{enumerate}
+
+\subsection{Le manifeste JSON comme artefact intermédiaire}
+
+Le manifeste JSON est un fichier qui persiste sur disque entre l'étape d'analyse et l'étape de génération. Il formalise~: la table cible, le mapping des colonnes, les stratégies de résolution FK, l'ordre d'import des entités et les métadonnées de transformation. Cette matérialisation permet de~:
+\begin{itemize}
+    \item Valider le mapping avec le consultant avant de générer les pipelines ;
+    \item Versionner le résultat de l'analyse sous Git ;
+    \item Régénérer les pipelines sans relancer l'analyse si seul le format de sortie change.
+\end{itemize}
+
+\subsection{Composants du système}
+
+\begin{itemize}
+    \item \textbf{Application Axelor Mapper~:} interface web (React + FastAPI) offrant un terminal conversationnel et des actions post-mapping (génération, exécution, consultation des résultats).
+    \item \textbf{Skills IA~:} prompts structurés guidant l'agent à travers l'analyse du CSV et la génération des pipelines.
+    \item \textbf{Manifeste JSON~:} fichier décrivant le mapping complet d'une entité.
+    \item \textbf{Pipelines Apache Hop~:} fichiers XML (.hpl) implémentant les patterns d'import (upsert, insert-only, junction, post-SQL).
+    \item \textbf{Workflows Apache Hop~:} fichiers XML (.hwf) orchestrant l'exécution séquentielle des pipelines.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{Architecture-generale.png}
+    \caption{Architecture globale du framework AOS-ETL}
+    \label{fig:archi-generale}
+\end{figure}
+
+%% ============================================================
+\section{Sécurité et conformité RGPD}
+\label{sec:securite}
+%% ============================================================
+
+\subsection{Mesures de sécurité actuelles}
+
+\begin{itemize}
+    \item \textbf{Accès direct PostgreSQL~:} les credentials de la base cible sont saisis dans l'interface au démarrage de la session et restent côté serveur backend. Aucun appel API vers l'application Axelor n'est effectué.
+    \item \textbf{Sessions éphémères~:} chaque session est identifiée par un UUID aléatoire. Il n'y a pas de système d'authentification utilisateur — l'outil est conçu pour un usage interne en environnement contrôlé.
+    \item \textbf{Clés API~:} l'accès à Claude nécessite une authentification standard via le CLI (\texttt{claude login}). Aucune clé n'est stockée par l'application.
+\end{itemize}
+
+\subsection{Conformité RGPD et données personnelles}
+
+L'agent IA (Claude) traite les fichiers CSV fournis par l'utilisateur dans son contexte de conversation. Si ces fichiers contiennent des données personnelles (noms, adresses, emails de clients réels), ces données sont transmises au modèle hébergé par Anthropic.
+
+\textbf{Limitation actuelle~:} l'outil ne supporte pas l'anonymisation automatique des données avant leur envoi au modèle. Il est donc de la \textbf{responsabilité de l'utilisateur} de~:
+\begin{itemize}
+    \item Utiliser des fichiers d'entrée anonymisés ou fictifs lors de la phase de mapping ;
+    \item Travailler sur une base de données de test (et non de production) ;
+    \item Ne pas exposer de données personnelles réelles à l'agent IA.
+\end{itemize}
+
+Cette approche est conforme à l'usage en environnement de développement, où les données de test sont généralement synthétiques. L'anonymisation automatique des données en amont constitue une perspective d'amélioration future.
+
+%% ============================================================
+\section*{Conclusion}
+%% ============================================================
+
+Ce chapitre a présenté les choix technologiques justifiés par benchmark, l'architecture à deux flux découplés par le manifeste JSON, et les mesures de sécurité. Le chapitre suivant aborde l'implémentation concrète de chaque composant.

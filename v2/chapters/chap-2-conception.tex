@@ -1,0 +1,114 @@
+\chapter{Problématique}
+\label{chap:problematique}
+
+Ce chapitre analyse le système existant et ses limites, formule la problématique centrale du projet et présente la solution proposée.
+
+%% ============================================================
+\section{Critique de l'existant}
+\label{sec:critique-existant}
+%% ============================================================
+
+Lors du déploiement d'Axelor Open Suite (AOS) chez un nouveau client, l'une des étapes les plus critiques est l'import des données depuis le système d'information existant. Les clients disposent de données historiques issues d'ERP hétérogènes, de fichiers CSV exportés manuellement, ou de bases de données propriétaires. Ces données ne sont souvent pas conformes au modèle de données d'AOS : formats de dates différents, clés étrangères manquantes, devises ou unités non référencées, adresses dans des formats libres, etc. La mise en conformité et l'injection de ces données dans la base Axelor représente un défi technique récurrent pour chaque projet d'intégration.
+
+Lors de chaque déploiement, l'équipe d'intégration doit développer plus de 20 scripts Java spécifiques pour assurer l'import des données. Le tableau~\ref{tab:projets-scripts} illustre la réalité de quelques projets récents :
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{p{3cm} p{4.5cm} p{5cm}}
+        \toprule
+        \rowcolor{gray!20}
+        \textbf{Projet} & \textbf{Scripts} & \textbf{Secteur} \\
+        \midrule
+        \rowcolor{gray!5}
+        bolt-app & 23 scripts Java & Manufacturing \\
+        neodyme  & 20 scripts Java & Services \\
+        \rowcolor{gray!5}
+        xelians  & 3 configs XML + scripts Python & Gestion documentaire \\
+        \bottomrule
+    \end{tabular}
+    \caption{Volume de scripts d'import par projet client}
+    \label{tab:projets-scripts}
+\end{table}
+
+Ces scripts sont écrits sur mesure pour chaque client et ne sont pas réutilisables d'un projet à l'autre.
+
+Il est important de noter qu'Axelor dispose d'un mécanisme natif d'import de données, basé sur des fichiers de binding XML associés à des fichiers CSV. Ce système permet de définir des correspondances entre colonnes CSV et champs du modèle, de résoudre les relations (Many-to-One, Many-to-Many) via des critères de recherche, et d'exécuter des traitements Java personnalisés lors de l'import. Cependant, ce mécanisme passe par l'ensemble de la couche applicative d'Axelor (validations métier, listeners, calculs dérivés), ce qui engendre un \textbf{temps d'exécution significatif} lors de l'import de volumes importants. En contournant ce framework applicatif et en insérant directement dans PostgreSQL, notre solution élimine cette surcharge et réduit considérablement les temps d'import — tout en respectant l'intégrité du schéma de données.
+
+L'approche actuelle présente plusieurs limites significatives :
+\begin{itemize}
+    \item \textbf{Coût élevé} — Le développement de scripts sur mesure mobilise des ressources de développement importantes pour chaque projet ;
+    \item \textbf{Non-réutilisabilité} — Les scripts sont spécifiques à chaque client et ne capitalisent pas sur les projets précédents ;
+    \item \textbf{Dépendance à un développeur Java} — Chaque projet d'intégration nécessite l'intervention d'un développeur Java qualifié ;
+    \item \textbf{Performance limitée} — Le passage par la couche applicative Axelor (binding XML + traitements Java) ralentit significativement les imports à grande volumétrie.
+\end{itemize}
+
+%% ============================================================
+\section{Motivation et problématique}
+\label{sec:motivation}
+%% ============================================================
+
+\subsection{Motivation}
+
+Plusieurs facteurs convergent pour rendre ce projet pertinent aujourd'hui :
+
+\begin{itemize}
+    \item \textbf{Maturité des outils ETL open source} — Apache Hop, issu du projet Kettle/Pentaho, offre désormais une plateforme stable avec plus de 400 transformations natives, un format XML versionnable et une exécution en ligne de commande compatible avec les pipelines CI/CD modernes.
+    \item \textbf{Émergence des LLMs capables de générer du code} — Les modèles de langage de dernière génération (Claude, GPT-4) démontrent une capacité à produire du code structuré (XML, JSON) à partir d'instructions en langage naturel, ouvrant la voie à l'automatisation de tâches de configuration jusqu'ici manuelles.
+    \item \textbf{Besoin de scalabilité chez Axelor} — Avec la croissance du nombre de projets clients, l'approche artisanale actuelle ne passe plus à l'échelle. Axelor a besoin d'un outil qui capitalise sur les projets passés et réduit le temps d'intégration par client.
+\end{itemize}
+
+\subsection{Formulation de la problématique}
+
+La problématique centrale de notre projet se formule ainsi :
+
+\begin{quote}
+\textit{Comment concevoir un framework ETL générique qui formalise les règles métier de l'ERP sous forme de transformations déclaratives et accélère la configuration grâce à des agents d'intelligence artificielle ?}
+\end{quote}
+
+\subsection{Objectifs}
+
+Pour répondre à cette problématique, nous avons défini les objectifs suivants :
+
+\begin{enumerate}
+    \item \textbf{Standardiser le processus d'import} — Remplacer les scripts Java ad hoc par des pipelines ETL déclaratifs, paramétrables et versionnables. Chaque pipeline doit implémenter un pattern d'upsert (insert ou update selon l'existence de l'enregistrement) garantissant l'idempotence des imports.
+
+    \item \textbf{Valider le framework sur quatre domaines métier} — Couvrir les entités de complexité croissante : produits (FK simples), partenaires (adresses embarquées, tables de jonction), commandes de vente (statuts, séquences conditionnelles) et factures (vérifications comptables, échéances). La validation finale s'effectue par la ventilation réussie des factures importées.
+
+    \item \textbf{Automatiser la configuration par IA} — Développer des skills spécialisés capables d'analyser un CSV source, d'identifier les correspondances avec le schéma Axelor, de résoudre les dépendances entre entités et de produire un manifeste de mapping exploitable.
+
+    \item \textbf{Développer une application d'interface} — Offrir aux consultants fonctionnels une application web (Axelor Mapper) qui encapsule l'ensemble du processus : de l'upload des fichiers à la consultation des résultats d'import, en passant par l'interaction conversationnelle avec l'agent IA.
+
+    \item \textbf{Garantir la performance à grande volumétrie} — En contournant la couche applicative Axelor et en insérant directement dans PostgreSQL, assurer des temps d'import significativement réduits par rapport au mécanisme natif, même sur des jeux de données de plusieurs milliers d'enregistrements.
+\end{enumerate}
+
+\subsection{Contraintes}
+
+La solution doit respecter les contraintes suivantes :
+\begin{itemize}
+    \item \textbf{Autonomie vis-à-vis de l'API Axelor} — Les imports s'effectuent en accès direct PostgreSQL, sans dépendance au serveur applicatif Axelor (qui peut ne pas être démarré lors des migrations). Cette autonomie implique que les pipelines doivent reproduire eux-mêmes les comportements habituellement gérés par la couche applicative : résolution des clés étrangères, gestion des séquences d'identifiants, calcul des champs dérivés (totaux, noms complets), et respect des contraintes d'intégrité référentielle du schéma ;
+    \item \textbf{Idempotence obligatoire} — Toute ré-exécution d'un import ne doit produire aucun doublon ni corruption de données. Le mécanisme repose sur un champ \texttt{import\_id} servant de clé de déduplication : si un enregistrement avec le même \texttt{import\_id} existe déjà, le pipeline compare les champs sensibles pour détecter d'éventuels changements dans le CSV source. En cas de modification, la mise à jour s'effectue en respectant le \textbf{verrouillage optimiste} d'Axelor (incrémentation du champ \texttt{version}), garantissant la cohérence même en cas d'accès concurrent ;
+    \item \textbf{Traçabilité} — Les enregistrements rejetés (FK non résolues, données invalides) doivent être routés vers des rapports d'erreurs exploitables par le consultant ;
+    \item \textbf{Versionnabilité} — L'intégralité des artefacts (pipelines, manifestes, datasets) doit être gérée sous Git. Toute modification dans le modèle de données AOS doit être répercutée dans les pipelines correspondants, et ce suivi est facilité par le versionnement.
+\end{itemize}
+
+%% ============================================================
+\section{Solution proposée}
+\label{sec:solution}
+%% ============================================================
+
+Pour répondre à cette problématique, nous proposons un framework ETL intelligent reposant sur trois piliers :
+
+\begin{itemize}
+    \item \textbf{Apache Hop} — une plateforme ETL open source permettant de définir des pipelines de transformation de données en XML déclaratif, versionnables sous Git et exécutables en ligne de commande ;
+    \item \textbf{Des agents d'intelligence artificielle} (Claude, Anthropic) — capables d'analyser les fichiers source, de résoudre les dépendances entre entités et de générer automatiquement les pipelines d'import conformes au schéma Axelor ;
+    \item \textbf{Une application web} (Axelor Mapper) — offrant une interface conversationnelle guidant le responsable d'intégration à travers le processus complet : upload des CSV, mapping interactif, validation du manifeste, génération et exécution des pipelines.
+\end{itemize}
+
+Cette architecture découple la phase d'analyse (assistée par IA) de la phase d'exécution (moteur Apache Hop), avec un \textbf{manifeste JSON} servant de contrat entre les deux. Ce découplage permet de modifier ou d'améliorer un flux sans impacter l'autre.
+
+%% ============================================================
+\section*{Conclusion}
+%% ============================================================
+
+Ce chapitre a analysé les limites du système d'import existant, formulé la problématique centrale et présenté la solution proposée. Le chapitre suivant formalise les besoins fonctionnels et non fonctionnels et détaille la méthodologie de travail adoptée.

@@ -1,0 +1,13 @@
+\chapter*{Résumé}
+\addcontentsline{toc}{chapter}{Résumé}
+\markboth{Résumé}{Résumé}
+
+La migration de données constitue l'un des défis les plus critiques lors du déploiement d'un ERP. Dans le contexte d'Axelor Open Suite, ce processus repose actuellement sur des scripts Java développés spécifiquement pour chaque projet client — une approche coûteuse, non réutilisable et difficile à maintenir.
+
+Ce mémoire présente la conception et le développement d'un framework ETL générique à gateways de décision, basé sur Apache Hop, destiné à standardiser et automatiser l'import de données vers Axelor. Le framework formalise les règles métier de l'ERP en transformations déclaratives et réutilisables, couvrant quatre domaines fonctionnels de complexité croissante : produits, partenaires, commandes et factures.
+
+La solution intègre deux contributions complémentaires : (1) une architecture de pipeline à gateways avec résolution automatique des dépendances inter-entités, opérant en totale autonomie vis-à-vis de l'API Axelor ; (2) un pattern d'\textit{Agent-Assisted ETL} composé de 3 skills IA spécialisées et d'une application web (\textit{Axelor Mapper}) qui automatisent le cycle complet d'import — de l'analyse interactive du schéma source à la génération de pipelines conformes.
+
+L'évaluation du framework sur quatre domaines fonctionnels démontre la capacité à importer des entités de complexité croissante, avec un gain de productivité significatif sur les phases de configuration grâce à l'assistance IA.
+
+\textbf{Mots clés :} ETL, Apache Hop, ERP, Axelor, Pipeline à Gateways, Migration de Données, LLM, Agent IA, Génération de Code.
