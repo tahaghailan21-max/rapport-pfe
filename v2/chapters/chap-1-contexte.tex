@@ -1,7 +1,7 @@
 \chapter{Contexte général du projet}
 \label{chap:contexte}
 
-Ce premier chapitre a pour objectif de situer le cadre général dans lequel s'inscrit notre projet de fin d'études. Nous commençons par présenter l'organisme d'accueil, puis nous exposons le contexte et la problématique qui ont motivé ce travail, avant de détailler l'organisation adoptée pour sa réalisation.
+Le premier chapitre ambitionne de situer le cadre général dans lequel se réalise notre projet de fin d'études. Nous avons voulu commencer par présenter l'organisme d'accueil, puis nous en venons à présenter le contexte et la problématique qui ont suscité ce travail avant de donner des détails concernant l'organisation mise en place pour sa réalisation.
 
 %% ─────────────────────────────────────────────
 \section{Présentation de l'organisme d'accueil}
@@ -40,9 +40,13 @@ Ce premier chapitre a pour objectif de situer le cadre général dans lequel s'i
 
 \subsection{Présentation générale}
 
-Axelor est un éditeur français de logiciels open source spécialisé dans les solutions ERP, CRM et BPM. Fondée en 2005 et dirigée par Laith Jubair (PDG), l'entreprise propose une plateforme complète permettant aux organisations de digitaliser et d'optimiser l'ensemble de leurs processus métier. Axelor se distingue par son approche open source et sa philosophie low-code, rendant ses solutions accessibles à un large éventail d'entreprises~\cite{axelor_erp}.
+Axelor est un éditeur français de logiciels open source spécialiste des solutions ERP, CRM et BPM.
 
-Implantée dans quatre pays, Axelor dispose de 7 sites en France (siège social), au Maroc, au Canada et en Inde.
+L'entreprise créée en 2005 et dirigée par Laith Jubair (PDG), propose une plateforme complète, permettant aux organisations de digitaliser et d'optimiser l'ensemble de leurs processus métier.
+
+Axelor se distingue par son approche open source et low-code, a priori un gage d'ouverture et d'accessibilité de ses solutions à un très large éventail d'entreprises~\cite{axelor_erp}.
+
+Axelor est implantée dans 4 pays (France, Maroc, Canada et Inde) avec 7 sites (le siège social est basé en France).
 
 \begin{figure}[H]
   \centering
@@ -53,16 +57,16 @@ Implantée dans quatre pays, Axelor dispose de 7 sites en France (siège social)
 
 \subsection{Secteur d'activité}
 
-Axelor évolue dans le secteur de l'édition de logiciels de gestion d'entreprise. Son cœur de métier couvre trois domaines complémentaires :
+Axelor opère au sein du secteur de l'édition de logiciels de gestion d'entreprise. Son c\oe{}ur de métier est constitué de trois domaines complémentaires :
 \begin{itemize}
-    \item \textbf{ERP} — Progiciel de Gestion Intégré couvrant la comptabilité, les achats, les ventes, la production et les stocks ;
-    \item \textbf{CRM} — Gestion de la Relation Client pour le suivi commercial et marketing ;
-    \item \textbf{BPM} — Gestion des Processus Métier pour la modélisation et l'automatisation des workflows.
+    \item \textbf{ERP} : Progiciel de Gestion Intégré englobant la comptabilité, les achats, les ventes, la production et les stocks ;
+    \item \textbf{CRM} : Gestion de la Relation Client pour le suivi commercial et marketing ;
+    \item \textbf{BPM} : Gestion des Processus Métier pour la modélisation et l'automatisation des workflows.
 \end{itemize}
 
 \subsection{Structure et organisation}
 
-L'organigramme de la filiale Axelor Maroc illustre une structure hiérarchique claire. Sous la direction générale, l'organisation s'articule autour d'un directeur de projet supervisant les chefs de projet, lesquels encadrent les consultants fonctionnels et les ingénieurs R\&D. Une responsable des ressources humaines complète cette structure. Cette organisation permet une coordination efficace entre les équipes techniques et fonctionnelles pour la livraison des projets d'intégration ERP.
+L'organigramme de la filiale Axelor Maroc reflète une structure hiérarchique. Sous la direction générale se trouve un directeur de projet régi par des chefs de projet, eux-mêmes associés à des consultants fonctionnels et à des ingénieurs R\&D, sans oublier une responsable des ressources humaines. Cette organisation facilite une interaction harmonieuse entre les équipes techniques et fonctionnelles dans le cadre de la livraison des projets d'intégration ERP.
 
 \begin{figure}[H]
   \centering
@@ -73,17 +77,17 @@ L'organigramme de la filiale Axelor Maroc illustre une structure hiérarchique c
 
 \subsection{Stack technique}
 
-La plateforme Axelor repose sur une architecture multi-couches s'appuyant sur des technologies éprouvées :
+La plateforme Axelor repose sur une architecture multi-couches composée de technologies éprouvées :
 
 \begin{itemize}
-    \item \textbf{Interface utilisateur} — React pour le frontend web moderne et réactif ;
-    \item \textbf{Web Services} — RESTEasy pour l'exposition d'API RESTful ;
-    \item \textbf{Sécurité} — Apache Shiro pour l'authentification et le contrôle d'accès ;
-    \item \textbf{Reporting / BI} — BIRT pour la génération de rapports et tableaux de bord ;
-    \item \textbf{Processus} — Camunda pour la modélisation et l'exécution des workflows BPM ;
-    \item \textbf{Modules métier} — Java pour la logique applicative ;
-    \item \textbf{ORM} — Hibernate pour la persistance objet-relationnelle~\cite{hibernate2024} ;
-    \item \textbf{Base de données} — PostgreSQL comme SGBD relationnel~\cite{postgresql_doc}.
+    \item \textbf{Interface utilisateur} : React pour le développement d'un web moderne et réactif ;
+    \item \textbf{Web Services} : RESTEasy pour l'exposition d'API RESTful ;
+    \item \textbf{Sécurité} : Apache Shiro pour l'authentification et le contrôle d'accès ;
+    \item \textbf{Reporting / BI} : BIRT pour la génération des rapports et tableaux de bord ;
+    \item \textbf{Processus} : Camunda pour la modélisation et l'exécution des workflows BPM ;
+    \item \textbf{Modules métier} : Java pour la logique applicative ;
+    \item \textbf{ORM} : Hibernate pour la persistance objet-relationnelle~\cite{hibernate2024} ;
+    \item \textbf{Base de données} : PostgreSQL comme SGBD relationnel~\cite{postgresql_doc}.
 \end{itemize}
 
 \begin{figure}[H]
@@ -95,16 +99,16 @@ La plateforme Axelor repose sur une architecture multi-couches s'appuyant sur de
 
 \subsection{Produits}
 
-L'offre d'Axelor s'articule autour de deux composantes principales :
+L'offre d'Axelor repose sur deux éléments majeurs :
 
 \begin{itemize}
-    \item \textbf{Axelor Open Platform (AOP)} — Une plateforme low-code permettant de développer rapidement des applications métier grâce à un système de description déclarative (XML) et à un moteur de vues dynamiques ;
-    \item \textbf{Axelor Open Suite (AOS)} — Un ensemble de plus de 30 applications métier intégrées construites sur AOP, couvrant la comptabilité, la gestion commerciale, les ressources humaines, la production, la supply chain, et bien d'autres domaines.
+    \item \textbf{Axelor Open Platform (AOP)} : plateforme low-code pour le développement rapide d'applications métier par un système de description déclaratif (XML) et par un moteur de vues dynamiques ;
+    \item \textbf{Axelor Open Suite (AOS)} : ensemble de plus de 30 applications métiers déjà intégrées bâties sur AOP allant de la comptabilité, à la gestion commerciale en passant par la gestion des ressources humaines, la production, la supply chain, etc.
 \end{itemize}
 
 \subsection{Clients}
 
-Axelor accompagne une clientèle diversifiée, allant des PME aux grands groupes internationaux, dans des secteurs tels que l'industrie, l'énergie, le e-commerce et le secteur public. Parmi les références notables figurent \textbf{Thyssenkrupp}, \textbf{Stellantis}, \textbf{Cdiscount}, \textbf{Trenitalia}, \textbf{Enercoop}, \textbf{Carbone~4}, ainsi que des institutions publiques comme le \textbf{Ministère de la Justice} et le \textbf{Conseil départemental des Hauts-de-Seine}. L'écosystème Axelor compte aujourd'hui plus d'un million d'utilisateurs à travers le monde.
+Axelor accompagne une clientèle variée allant des PME aux groupes internationaux dans les secteurs de l'industrie, l'énergie, le e-commerce ou le secteur public. Parmi les références : \textbf{Thyssenkrupp}, \textbf{Stellantis}, \textbf{Cdiscount}, \textbf{Trenitalia}, \textbf{Enercoop}, \textbf{Carbone~4} et les institutionnelles que sont le \textbf{Ministère de la Justice} et le \textbf{Conseil départemental des Hauts-de-Seine}.
 
 \begin{figure}[H]
   \centering

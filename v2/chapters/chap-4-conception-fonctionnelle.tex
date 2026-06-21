@@ -1,7 +1,7 @@
 \chapter{Conception fonctionnelle}
 \label{chap:conception-fonctionnelle}
 
-Ce chapitre présente la modélisation du système AOS-ETL à l'aide de diagrammes UML. Il comprend un diagramme de cas d'utilisation décrivant les acteurs principaux et leurs interactions avec le système, des diagrammes de séquence détaillant les processus clés, ainsi qu'un diagramme de classes représentant les entités fondamentales et leurs relations.
+Ce chapitre a pour but de faire la modélisation du système AOS-ETL à partir de diagrammes UML. On y trouve un diagramme de cas d'utilisation précisant les acteurs principaux et leurs interactions avec le système, des diagrammes de séquence relatant les processus clés, un diagramme de classes destiné à représenter les entités fondamentales et leurs relations.
 
 %% ============================================================
 \section{Modélisation du système}
@@ -10,7 +10,7 @@ Ce chapitre présente la modélisation du système AOS-ETL à l'aide de diagramm
 
 \subsection{Définition d'UML}
 
-Le langage de modélisation unifié (UML) est un langage visuel standardisé utilisé pour spécifier, visualiser, construire et documenter les systèmes logiciels. Il permet de comprendre clairement la structure et le comportement d'un système, réduisant les ambiguïtés et assurant la cohérence tout au long du projet~\cite{uml}.
+Le langage de modélisation unifié (UML) est un langage visuel standardisé lequel se prête à spécifier, visualiser, construire et documenter les systèmes logiciels, et permet de comprendre de façon claire la structure et le comportement d'un système, en diminuant les ambiguïtés et en garantissant la cohérence tout au long du projet~\cite{uml}.
 
 \begin{figure}[H]
     \centering
@@ -85,20 +85,22 @@ Le tableau~\ref{tab:raffinement} détaille les actions possibles par acteur.
 \subsubsection{Séquence — Phase Mapping}
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{uml-sequence-mapping.png}
+    \makebox[\textwidth][c]{\includegraphics[width=1.25\textwidth]{uml-sequence-mapping.png}}
     \caption{Diagramme de séquence — session de mapping via l'agent IA}
     \label{fig:seq-mapping}
 \end{figure}
 
+\clearpage
+
 \subsubsection{Séquence — Phase Post-mapping}
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{uml-sequence-postmapping.png}
+    \makebox[\textwidth][c]{\includegraphics[width=1.25\textwidth]{uml-sequence-postmapping.png}}
     \caption{Diagramme de séquence — génération et exécution des pipelines}
     \label{fig:seq-postmapping}
 \end{figure}
+
+\clearpage
 
 \subsection{Diagramme de classes}
 
@@ -113,4 +115,4 @@ Le tableau~\ref{tab:raffinement} détaille les actions possibles par acteur.
 \section*{Conclusion}
 %% ============================================================
 
-Ce chapitre a présenté la conception fonctionnelle du système à travers les diagrammes UML. Les cas d'utilisation ont permis d'identifier les interactions entre le responsable d'intégration et le système, les diagrammes de séquence ont détaillé les flux principaux, et le diagramme de classes a formalisé les entités clés du framework. Le chapitre suivant aborde l'architecture technique de la solution.
+Ce chapitre a offert une vue fonctionnelle du système au moyen de diagrammes UML. Les cas d'utilisation ont permis de repérer les interactions entre le responsable d'intégration et le système, les diagrammes de séquence ont détaillé les flux principaux et le diagramme de classes a formalisé les entités majeures du framework. Le chapitre suivant explique l'architecture technique de la solution.

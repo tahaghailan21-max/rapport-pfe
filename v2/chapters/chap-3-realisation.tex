@@ -194,13 +194,19 @@ L'équipe projet impliquée dans la réalisation de ce stage est présentée dan
 Le projet a été découpé en sept incréments~:
 
 \begin{itemize}
-  \item \textbf{Incrément 1~:} Pipelines d'import des produits
-  \item \textbf{Incrément 2~:} Pipelines d'import des partenaires
-  \item \textbf{Incrément 3~:} Pipelines d'import des commandes de vente
-  \item \textbf{Incrément 4~:} Pipelines d'import des factures
-  \item \textbf{Incrément 5~:} Interface Axelor Mapper
-  \item \textbf{Incrément 6~:} Skill analyze-and-map
-  \item \textbf{Incrément 7~:} Skills de génération (pipelines + workflows)
+  \item \textbf{Incrément 1~:} Pipelines d'import des produits : 4 pipelines portant sur les unités manquantes, les familles, catégories et produits, via résolution de 5 FK et pattern upsert sur \texttt{import\_id}. Cet incrément est le modèle de référence de tous les patterns qui suivent.
+
+  \item \textbf{Incrément 2~:} Pipelines d'import des partenaires : 6 pipelines comprenant le parsing des adresses en texte libre, la gestion des tables de jonction Many-to-Many, ainsi que le calcul des champs dérivés (\texttt{full\_name}).
+
+  \item \textbf{Incrément 3~:} Pipelines d'import des commandes de vente : 4 pipelines avec branchement conditionnel en fonction du statut (brouillon vs confirmé), résolution de 12 FK et calcul automatique des totaux HT/TVA/TTC.
+
+  \item \textbf{Incrément 4~:} Pipelines d'import des factures : 6 pipelines, l'entité la plus complexe du périmètre~: \texttt{partner\_account} conditionnel, génération des échéances de paiement et vérification de la ventilation comptable.
+
+  \item \textbf{Incrément 5~:} Interface Axelor Mapper : application web FastAPI + React incluant un terminal PTY xterm.js relayé par WebSocket, permettant au consultant d'interroger l'agent IA depuis le navigateur.
+
+  \item \textbf{Incrément 6~:} Skill \texttt{analyze-and-map} : skill conversationnel en 5 phases~: lecture du CSV, introspection de PostgreSQL, résolution interactive des FK (preloaded / separate\_file / embedded), écriture du manifeste JSON.
+
+  \item \textbf{Incrément 7~:} Skills de génération (pipelines + workflows) : deux skills convertissant le manifeste JSON en fichiers XML Apache Hop valides, affinés par une boucle d'amélioration itérative sur un jeu de données de référence.
 \end{itemize}
 
 %% ============================================================
