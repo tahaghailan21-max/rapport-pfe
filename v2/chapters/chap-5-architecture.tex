@@ -155,7 +155,7 @@ Le manifeste JSON est un fichier pérenne sur disque entre l'étape d'analyse et
 \subsection{Composants du système}
 
 \begin{itemize}
-    \item \textbf{Application Axelor Mapper~:} interface web (React + FastAPI) offrant terminal de conversation et actions post-mapping (génération, exécution, consultation des résultats).
+    \item \textbf{Application Axelor Import Studio~:} interface web (React + FastAPI) offrant terminal de conversation et actions post-mapping (génération, exécution, consultation des résultats).
     \item \textbf{Compétences en IA~:} prompts structurés guidant l'agent à travers l'analyse du CSV et la création des pipelines.
     \item \textbf{Manifeste JSON~:} fichier décrivant le mapping global d'une entité.
     \item \textbf{Pipelines Apache Hop~:} fichiers XML (\texttt{.hpl}) mettant en œuvre les patterns d'import (upsert, junction, post-SQL).
@@ -165,18 +165,18 @@ Le manifeste JSON est un fichier pérenne sur disque entre l'étape d'analyse et
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{Architecture-generale.png}
-    \caption{Architecture globale du framework AOS-ETL}
+    \caption{Architecture globale du framework d'import}
     \label{fig:archi-generale}
 \end{figure}
 
-\subsection{Architecture de l'application Axelor Mapper}
+\subsection{Architecture de l'application Axelor Import Studio}
 
-L'application Axelor Mapper se compose d'un frontend React avec un terminal embarqué (xterm.js), d'un backend FastAPI qui orchestre les sessions et relaie les entrées/sorties vers Claude CLI via un pseudo-terminal, et de composants externes (Claude CLI, PostgreSQL, système de fichiers). La figure~\ref{fig:archi-mapper} détaille les interactions entre ces composants.
+L'application Axelor Import Studio se compose d'un frontend React avec un terminal embarqué (xterm.js), d'un backend FastAPI qui orchestre les sessions et relaie les entrées/sorties vers Claude CLI via un pseudo-terminal, et de composants externes (Claude CLI, PostgreSQL, système de fichiers). La figure~\ref{fig:archi-mapper} détaille les interactions entre ces composants.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{axelor-mapper-technical-architecture.png}
-    \caption{Architecture technique de l'application Axelor Mapper}
+    \caption{Architecture technique de l'application Axelor Import Studio}
     \label{fig:archi-mapper}
 \end{figure}
 

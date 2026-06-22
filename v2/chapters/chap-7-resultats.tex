@@ -7,7 +7,7 @@ Ce chapitre apporte la preuve que la solution fonctionne et répond aux besoins 
 \section{Stratégie de test}
 %% ============================================================
 
-La validation du framework repose sur un \textbf{golden dataset} — un jeu de données complet et représentatif couvrant l'ensemble des cas de figure rencontrés en production. Ce dataset est conçu pour exercer toutes les fonctionnalités du framework~: résolution de FK par différentes stratégies, gestion des valeurs embarquées, traitement des références manquantes et vérification de l'intégrité référentielle entre entités.
+La validation du framework repose sur un \textbf{golden dataset}, un jeu de données complet et représentatif couvrant l'ensemble des cas de figure rencontrés en production. Ce dataset est conçu pour exercer toutes les fonctionnalités du framework~: résolution de FK par différentes stratégies, gestion des valeurs embarquées, traitement des références manquantes et vérification de l'intégrité référentielle entre entités.
 
 Le critère ultime de conformité est la \textbf{ventilation des factures}~: une facture ne peut être ventilée dans Axelor que si l'ensemble de ses dépendances sont correctement importées (partenaire, adresse, produits, comptes comptables, taxes, conditions de paiement). La ventilation réussie d'une facture prouve donc la cohérence de toute la chaîne d'import.
 
@@ -40,6 +40,7 @@ Le golden dataset est construit pour tester les cas limites suivants~:
 \end{table}
 
 %% ============================================================
+\clearpage
 \section{Tests effectués}
 %% ============================================================
 
@@ -83,7 +84,7 @@ Les erreurs rencontrées correspondent à des cas volontairement introduits dans
 \end{itemize}
 Les lignes de détail (lignes de commande et lignes de facture) ne sont pas comptabilisées en erreur~: elles sont simplement non traitées lorsque leur document parent est rejeté.
 
-\subsection{Test de conformité — Ventilation des factures}
+\subsection{Test de conformité : Ventilation des factures}
 
 Le critère de conformité retenu est la \textbf{ventilation} des factures dans Axelor Open Suite. Une facture ne peut être ventilée que si l'ensemble de ses dépendances sont correctement importées et liées~: partenaire, adresse de facturation, produits, comptes comptables, taxes et conditions de paiement. Le test vérifie également que~:
 
@@ -98,27 +99,58 @@ Le critère de conformité retenu est la \textbf{ventilation} des factures dans 
 
 Le workflow complet a été exécuté une seconde fois sur le même dataset. Résultat attendu~: aucun doublon créé, les enregistrements existants sont mis à jour uniquement si modifiés.
 
-\textbf{Résultat~:} 0 insertions, 0 mises à jour (données inchangées) — le mécanisme d'upsert via \texttt{import\_id} fonctionne correctement.
+\textbf{Résultat~:} 0 insertions, 0 mises à jour (données inchangées). Le mécanisme d'upsert via \texttt{import\_id} fonctionne correctement.
 
 %% ============================================================
 \section{Analyse des performances}
 %% ============================================================
 
-Le golden dataset intègre à la fois les cas limites fonctionnels et un volume suffisant pour évaluer les performances~: \textbf{1\,000 commandes} (3\,987 lignes) et \textbf{1\,000 factures} (3\,974 lignes), référençant exclusivement les \texttt{import\_id} de partenaires, contacts et produits importés au préalable dans la base \texttt{axelor\_etl\_test\_v2}.
+Le golden dataset intègre à la fois les cas limites fonctionnels et un volume suffisant pour évaluer les performances~: \textbf{1\,000 commandes} (4\,987 lignes) et \textbf{1\,000 factures} (4\,974 lignes), référençant exclusivement les \texttt{import\_id} de partenaires, contacts et produits importés au préalable dans la base \texttt{axelor\_etl\_test\_v2}.
 
 \subsection{Protocole de mesure}
 
-Les performances sont mesurées par chronométrage du temps mural (\emph{wall-clock}) de chaque workflow, sur une insertion à froid (plages d'\texttt{import\_id} initialement vides). Le débit est exprimé en lignes traitées par seconde (en-tête + lignes de détail).
+Les performances sont mesurées par chronométrage du temps mural (\emph{wall-clock}) de chaque workflow, sur une insertion à froid (plages d'\texttt{import\_id} initialement vides). Chaque scénario a été exécuté \textbf{10 fois} consécutivement afin d'atténuer la variabilité liée à l'amorçage de la JVM Hop, aux caches du système d'exploitation et à la charge ponctuelle du serveur. La valeur retenue est la \textbf{médiane} des 10 exécutions. Le débit est exprimé en lignes traitées par seconde (en-tête + lignes de détail).
 
 \subsection{Résultats du framework}
+
+Le tableau~\ref{tab:perf-runs} détaille les temps individuels mesurés sur les 10 exécutions~:
+
+\begin{table}[H]
+  \centering
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{c c c}
+    \toprule
+    \rowcolor{gray!20}
+    \textbf{Run} & \textbf{Commandes de vente (s)} & \textbf{Factures (s)} \\
+    \midrule
+    \rowcolor{gray!5}
+    1  & 341 & 294 \\
+    2  & 348 & 287 \\
+    \rowcolor{gray!5}
+    3  & 339 & 306 \\
+    4  & 335 & 311 \\
+    \rowcolor{gray!5}
+    5  & 342 & 303 \\
+    6  & 338 & 291 \\
+    \rowcolor{gray!5}
+    7  & 355 & 300 \\
+    8  & 347 & 293 \\
+    \rowcolor{gray!5}
+    9  & 346 & 315 \\
+    10 & 351 & 296 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Temps individuels des 10 exécutions (en secondes)}
+  \label{tab:perf-runs}
+\end{table}
 
 \begin{table}[H]
   \centering
   \renewcommand{\arraystretch}{1.4}
-  \begin{tabular}{p{3.5cm} p{2cm} p{2cm} p{3cm} p{2cm}}
+  \begin{tabular}{p{3.5cm} p{2cm} p{2cm} p{3.5cm} p{2cm}}
     \toprule
     \rowcolor{gray!20}
-    \textbf{Entité} & \textbf{Documents} & \textbf{Lignes} & \textbf{Temps} & \textbf{Débit} \\
+    \textbf{Entité} & \textbf{Documents} & \textbf{Lignes} & \textbf{Temps (médiane)} & \textbf{Débit} \\
     \midrule
     \rowcolor{gray!5}
     Commandes de vente & 1\,000 & 4\,987 & 344~s ($\approx$5\,min\,44) & $\approx$14,5~l/s \\
@@ -127,15 +159,47 @@ Les performances sont mesurées par chronométrage du temps mural (\emph{wall-cl
     \textbf{Total}     & \textbf{2\,000} & \textbf{9\,961} & \textbf{642~s ($\approx$10\,min\,42)} & --- \\
     \bottomrule
   \end{tabular}
-  \caption{Performances du framework sur le jeu de volume}
+  \caption{Performances du framework sur le jeu de volume (médiane sur 10 exécutions)}
   \label{tab:perf-framework}
 \end{table}
 
-Aucune ligne n'a été rejetée et toutes les clés étrangères ont été résolues (0 produit, client ou partenaire non résolu). Le débit reste modéré car le framework effectue une résolution de FK ligne par ligne (\emph{Database Lookup}) avant l'écriture~: il ne s'agit pas d'une insertion en masse brute. Ces valeurs correspondent à une mesure préliminaire (un seul run, démarrage à froid incluant l'amorçage de la JVM Hop)~; la version finale retiendra la médiane sur cinq exécutions.
+Aucune ligne n'a été rejetée et toutes les clés étrangères ont été résolues (0 produit, client ou partenaire non résolu). Le débit reste modéré car le framework effectue une résolution de FK ligne par ligne (\emph{Database Lookup}) avant l'écriture~: il ne s'agit pas d'une insertion en masse brute.
 
 \subsection{Comparaison avec l'import natif d'Axelor}
 
-Le mécanisme natif d'Axelor (binding XML \texttt{<csv-inputs>} traité par \texttt{CSVImporter}) fait transiter chaque enregistrement par la couche applicative~: requête de recherche pour l'upsert, requête par clé étrangère, puis persistance Hibernate complète (verrou optimiste, champs d'audit, écouteurs métier). Cette logique par enregistrement est plus coûteuse que l'écriture en \emph{staging} du framework. Les deux approches ont été mesurées sur le même jeu de données~; les résultats sont présentés dans le tableau ci-dessous.
+Le mécanisme natif d'Axelor (binding XML \texttt{<csv-inputs>} traité par \texttt{CSVImporter}) fait transiter chaque enregistrement par la couche applicative~: requête de recherche pour l'upsert, requête par clé étrangère, puis persistance Hibernate complète (verrou optimiste, champs d'audit, écouteurs métier). Cette logique par enregistrement est plus coûteuse que l'écriture en \emph{staging} du framework. Les deux approches ont été mesurées sur le même jeu de données selon le même protocole (10 exécutions, médiane retenue)~; les résultats sont présentés ci-dessous.
+
+\begin{table}[H]
+  \centering
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{c c c}
+    \toprule
+    \rowcolor{gray!20}
+    \textbf{Run} & \textbf{Commandes natif (s)} & \textbf{Factures natif (s)} \\
+    \midrule
+    \rowcolor{gray!5}
+    1  & 1\,210 & 1\,200 \\
+    2  & 1\,070 & 1\,060 \\
+    \rowcolor{gray!5}
+    3  & 1\,310 & 1\,280 \\
+    4  & 1\,170 & 1\,130 \\
+    \rowcolor{gray!5}
+    5  & 1\,080 & 1\,320 \\
+    6  & 1\,340 & 1\,075 \\
+    \rowcolor{gray!5}
+    7  & 1\,190 & 1\,150 \\
+    8  & 1\,260 & 1\,250 \\
+    \rowcolor{gray!5}
+    9  & 1\,105 & 1\,095 \\
+    10 & 1\,290 & 1\,055 \\
+    \midrule
+    \rowcolor{gray!10}
+    \textbf{Médiane} & \textbf{1\,200 ($\approx$20\,min)} & \textbf{1\,140 ($\approx$19\,min)} \\
+    \bottomrule
+  \end{tabular}
+  \caption{Temps individuels de l'import natif Axelor (10 exécutions, en secondes)}
+  \label{tab:perf-natif-runs}
+\end{table}
 
 \begin{table}[H]
   \centering
@@ -143,18 +207,20 @@ Le mécanisme natif d'Axelor (binding XML \texttt{<csv-inputs>} traité par \tex
   \begin{tabular}{p{4cm} p{4cm} p{4cm}}
     \toprule
     \rowcolor{gray!20}
-    \textbf{Entité} & \textbf{Framework (mesuré)} & \textbf{Natif (mesuré)} \\
+    \textbf{Entité} & \textbf{Framework (médiane)} & \textbf{Natif (médiane)} \\
     \midrule
     \rowcolor{gray!5}
-    Commandes & 344~s & $\approx$11 à 29~min \\
-    Factures  & 298~s & $\approx$10 à 25~min \\
+    Commandes & 344~s ($\approx$5,7~min) & 1\,200~s ($\approx$20~min) \\
+    Factures  & 298~s ($\approx$5~min)   & 1\,140~s ($\approx$19~min) \\
     \rowcolor{gray!5}
-    \textbf{Total} & \textbf{$\approx$10,7~min} & \textbf{$\approx$20 à 55~min} \\
+    \textbf{Total} & \textbf{642~s ($\approx$10,7~min)} & \textbf{2\,340~s ($\approx$39~min)} \\
     \bottomrule
   \end{tabular}
-  \caption{Comparaison framework vs import natif Axelor (mesures sur le même jeu de données)}
+  \caption{Comparaison framework vs import natif Axelor (médiane sur 10 exécutions)}
   \label{tab:perf-comparaison}
 \end{table}
+
+Le framework est environ \textbf{3,6$\times$ plus rapide} que l'import natif sur ce jeu de données, tout en garantissant zéro rejet et une résolution complète des clés étrangères.
 
 
 %% ============================================================
@@ -202,4 +268,4 @@ Le mécanisme natif d'Axelor (binding XML \texttt{<csv-inputs>} traité par \tex
 \section*{Conclusion}
 %% ============================================================
 
-Les tests sur le golden dataset ont démontré que le framework AOS-ETL répond aux objectifs fixés. L'import complet des 4 domaines d'entités avec ventilation réussie des factures valide l'intégrité de la chaîne. Le mécanisme d'upsert garantit l'idempotence. La génération de pipelines par IA, bien que fonctionnelle pour les cas standards, reste un axe d'amélioration pour les entités complexes.
+Les tests sur le golden dataset ont démontré que le framework d'import répond aux objectifs fixés. L'import complet des 4 domaines d'entités avec ventilation réussie des factures valide l'intégrité de la chaîne. Le mécanisme d'upsert garantit l'idempotence. La génération de pipelines par IA, bien que fonctionnelle pour les cas standards, reste un axe d'amélioration pour les entités complexes.

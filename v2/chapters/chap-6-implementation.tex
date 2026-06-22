@@ -557,9 +557,9 @@ Cette boucle a permis de découvrir et documenter de nombreuses conventions non 
 \end{figure}
 
 %% ──────────────────────────────────────────────────────────────
-\subsection{Application Axelor Mapper}
+\subsection{Application Axelor Import Studio}
 
-L'application Axelor Mapper est l'interface web qui encapsule l'ensemble du processus d'import. Elle se compose d'un backend FastAPI (Python) et d'un frontend React avec un terminal embarqué (xterm.js). Les sous-sections suivantes décrivent l'architecture interne avant de présenter l'interface utilisateur.
+L'application Axelor Import Studio est l'interface web qui encapsule l'ensemble du processus d'import. Elle se compose d'un backend FastAPI (Python) et d'un frontend React avec un terminal embarqué (xterm.js). Les sous-sections suivantes décrivent l'architecture interne avant de présenter l'interface utilisateur.
 
 \subsubsection{Composants du backend}
 
@@ -583,7 +583,7 @@ Le backend est organisé en cinq modules aux responsabilités distinctes, décri
     \texttt{chat/\_\_init\_\_.py} & Fonctions utilitaires partagées : localisation du binaire Claude, gestion des dossiers de session, sauvegarde des fichiers uploadés. \\
     \bottomrule
   \end{tabular}
-  \caption{Modules du backend Axelor Mapper}
+  \caption{Modules du backend Axelor Import Studio}
   \label{tab:backend-modules}
 \end{table}
 
@@ -663,4 +663,4 @@ Après validation du manifeste, l'utilisateur peut lancer la génération des pi
 \section*{Conclusion}
 %% ============================================================
 
-Ce chapitre a présenté l'environnement de développement et l'implémentation des quatre modules d'import (19 pipelines), des 3 skills IA, et de l'application Axelor Mapper. Chaque module suit des patterns adaptés à sa complexité. Le chapitre suivant présente les résultats obtenus et la validation du système.
+Ce chapitre a présenté l'environnement de développement et l'implémentation des quatre modules d'import (19 pipelines), des 3 skills IA, et de l'application Axelor Import Studio. Chaque module suit des patterns adaptés à sa complexité. Le chapitre suivant présente les résultats obtenus et la validation du système.

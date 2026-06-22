@@ -77,7 +77,7 @@ Pour répondre à cette problématique, nous avons défini les objectifs suivant
 
     \item \textbf{Automatiser la configuration par IA} — Développer des skills spécialisés capables d'analyser un CSV source, d'identifier les correspondances avec le schéma Axelor, de résoudre les dépendances entre entités et de produire un manifeste de mapping exploitable.
 
-    \item \textbf{Développer une application d'interface} — Offrir aux consultants fonctionnels une application web (Axelor Mapper) qui encapsule l'ensemble du processus : de l'upload des fichiers à la consultation des résultats d'import, en passant par l'interaction conversationnelle avec l'agent IA.
+    \item \textbf{Développer une application d'interface} — Offrir aux consultants fonctionnels une application web (Axelor Import Studio) qui encapsule l'ensemble du processus : de l'upload des fichiers à la consultation des résultats d'import, en passant par l'interaction conversationnelle avec l'agent IA.
 
     \item \textbf{Garantir la performance à grande volumétrie} — En contournant la couche applicative Axelor et en insérant directement dans PostgreSQL, assurer des temps d'import significativement réduits par rapport au mécanisme natif, même sur des jeux de données de plusieurs milliers d'enregistrements.
 \end{enumerate}
@@ -102,7 +102,7 @@ Pour répondre à cette problématique, nous proposons un framework ETL intellig
 \begin{itemize}
     \item \textbf{Apache Hop} — une plateforme ETL open source permettant de définir des pipelines de transformation de données en XML déclaratif, versionnables sous Git et exécutables en ligne de commande ;
     \item \textbf{Des agents d'intelligence artificielle} (Claude, Anthropic) — capables d'analyser les fichiers source, de résoudre les dépendances entre entités et de générer automatiquement les pipelines d'import conformes au schéma Axelor ;
-    \item \textbf{Une application web} (Axelor Mapper) — offrant une interface conversationnelle guidant le responsable d'intégration à travers le processus complet : upload des CSV, mapping interactif, validation du manifeste, génération et exécution des pipelines.
+    \item \textbf{Une application web} (Axelor Import Studio) — offrant une interface conversationnelle guidant le responsable d'intégration à travers le processus complet : upload des CSV, mapping interactif, validation du manifeste, génération et exécution des pipelines.
 \end{itemize}
 
 Cette architecture découple la phase d'analyse (assistée par IA) de la phase d'exécution (moteur Apache Hop), avec un \textbf{manifeste JSON} servant de contrat entre les deux. Ce découplage permet de modifier ou d'améliorer un flux sans impacter l'autre.

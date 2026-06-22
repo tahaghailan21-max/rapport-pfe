@@ -9,7 +9,7 @@ Ce chapitre formalise les besoins fonctionnels et non fonctionnels du framework,
 
 \subsection{Utilisateurs cibles}
 
-Le framework AOS-ETL s'adresse principalement aux \textbf{responsables d'intégration} chez Axelor — les consultants fonctionnels chargés de migrer les données des clients vers l'ERP lors des déploiements. Ces utilisateurs possèdent une connaissance du modèle métier Axelor mais ne sont pas nécessairement développeurs Java. Ils manipulent des fichiers CSV issus des systèmes legacy des clients et doivent les transformer pour les rendre conformes au schéma AOS.
+Le framework d'import s'adresse principalement aux \textbf{responsables d'intégration} chez Axelor — les consultants fonctionnels chargés de migrer les données des clients vers l'ERP lors des déploiements. Ces utilisateurs possèdent une connaissance du modèle métier Axelor mais ne sont pas nécessairement développeurs Java. Ils manipulent des fichiers CSV issus des systèmes legacy des clients et doivent les transformer pour les rendre conformes au schéma AOS.
 
 \subsection{Analyse des besoins utilisateurs}
 
@@ -63,7 +63,7 @@ Le tableau~\ref{tab:priorisation} classe les fonctionnalités du framework selon
     \midrule
     \multicolumn{2}{l}{\cellcolor{gray!10}\textbf{Should Have}} \\
     \midrule
-    Application Axelor Mapper & Interface pour les consultants \\
+    Application Axelor Import Studio & Interface pour les consultants \\
     \rowcolor{gray!5}
     Golden dataset de validation & Preuve de conformité \\
     Génération de workflows & Orchestration automatique \\
@@ -107,7 +107,7 @@ Le tableau~\ref{tab:priorisation} classe les fonctionnalités du framework selon
 
     \item \textbf{Génération assistée par IA~:} produire les fichiers XML Apache Hop à partir du manifeste JSON validé.
 
-    \item \textbf{Interface web (Axelor Mapper)~:} offrir aux consultants une application guidant l'ensemble du processus~: upload CSV, mapping interactif, validation du manifeste, génération et exécution des pipelines.
+    \item \textbf{Interface web (Axelor Import Studio)~:} offrir aux consultants une application guidant l'ensemble du processus~: upload CSV, mapping interactif, validation du manifeste, génération et exécution des pipelines.
 \end{enumerate}
 
 \subsection{Besoins non fonctionnels}
@@ -202,7 +202,7 @@ Le projet a été découpé en sept incréments~:
 
   \item \textbf{Incrément 4~:} Pipelines d'import des factures : 6 pipelines, l'entité la plus complexe du périmètre~: \texttt{partner\_account} conditionnel, génération des échéances de paiement et vérification de la ventilation comptable.
 
-  \item \textbf{Incrément 5~:} Interface Axelor Mapper : application web FastAPI + React incluant un terminal PTY xterm.js relayé par WebSocket, permettant au consultant d'interroger l'agent IA depuis le navigateur.
+  \item \textbf{Incrément 5~:} Interface Axelor Import Studio : application web FastAPI + React incluant un terminal PTY xterm.js relayé par WebSocket, permettant au consultant d'interroger l'agent IA depuis le navigateur.
 
   \item \textbf{Incrément 6~:} Skill \texttt{analyze-and-map} : skill conversationnel en 5 phases~: lecture du CSV, introspection de PostgreSQL, résolution interactive des FK (preloaded / separate\_file / embedded), écriture du manifeste JSON.
 
@@ -230,7 +230,7 @@ Le projet a été découpé en sept incréments~:
         \gantttitlelist{1,...,15}{1} \\
 
         \ganttbar{Écriture des pipelines ETL}{1}{4} \\
-        \ganttbar{Application Axelor Mapper}{5}{7} \\
+        \ganttbar{Application Axelor Import Studio}{5}{7} \\
         \ganttbar{Écriture des skills IA}{8}{11} \\
         \ganttbar{Tests, validation \& rédaction}{12}{15}
     \end{ganttchart}
