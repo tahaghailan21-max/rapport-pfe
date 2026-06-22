@@ -169,6 +169,17 @@ Le manifeste JSON est un fichier pérenne sur disque entre l'étape d'analyse et
     \label{fig:archi-generale}
 \end{figure}
 
+\subsection{Architecture de l'application Axelor Mapper}
+
+L'application Axelor Mapper se compose d'un frontend React avec un terminal embarqué (xterm.js), d'un backend FastAPI qui orchestre les sessions et relaie les entrées/sorties vers Claude CLI via un pseudo-terminal, et de composants externes (Claude CLI, PostgreSQL, système de fichiers). La figure~\ref{fig:archi-mapper} détaille les interactions entre ces composants.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{axelor-mapper-technical-architecture.png}
+    \caption{Architecture technique de l'application Axelor Mapper}
+    \label{fig:archi-mapper}
+\end{figure}
+
 \clearpage
 %% ============================================================
 \section{Sécurité et conformité RGPD}
