@@ -20,14 +20,14 @@ L'objectif du projet était de concevoir un framework ETL basé sur Apache Hop, 
 Les objectifs fixés en début de projet ont été atteints. La solution livrée apporte :
 
 \begin{itemize}
-  \item \textbf{un framework ETL réutilisable et paramétrable}, couvrant l'import de quatre entités Axelor — Produit, Partenaire, Commande de vente et Facture — à travers des pipelines Apache Hop standardisés et modulaires, organisés selon une architecture en deux étapes (consolidation puis injection) garantissant la cohérence transactionnelle ;
-  \item \textbf{un assistant IA de configuration}, composé de trois \textit{skills} Claude — \texttt{analyze-and-map-entity}, \texttt{generate-pipeline} et \texttt{generate-workflow} — qui automatisent l'analyse du fichier source, la résolution interactive des clés étrangères et la génération des fichiers \texttt{.hpl}/\texttt{.hwf} ;
+  \item \textbf{un framework ETL réutilisable et paramétrable}, couvrant l'import de quatre entités Axelor (Produit, Partenaire, Commande de vente et Facture) à travers des pipelines Apache Hop standardisés et modulaires, organisés selon une architecture en deux étapes (consolidation puis injection) garantissant la cohérence transactionnelle ;
+  \item \textbf{un assistant IA de configuration}, composé de trois \textit{skills} Claude (\texttt{analyze-and-map-entity}, \texttt{generate-pipeline} et \texttt{generate-workflow}) qui automatisent l'analyse du fichier source, la résolution interactive des clés étrangères et la génération des fichiers \texttt{.hpl}/\texttt{.hwf} ;
   \item \textbf{un contrat d'interface déclaratif}, le manifeste JSON, servant d'artefact intermédiaire entre l'analyse conversationnelle et la génération des pipelines, versionnable sous Git et régénérable à la demande sans ré-analyse ;
   \item \textbf{une application web accessible}, l'\textit{Axelor Import Studio}, offrant au consultant une interface graphique pour sélectionner l'entité cible, déposer le fichier source et piloter la session conversationnelle Claude via un terminal PTY intégré ;
   \item \textbf{une validation complète sur jeu de données \textit{golden}}, confirmant la conformité des imports, l'idempotence des pipelines et des performances nettement supérieures à l'import natif Axelor sur les volumes testés.
 \end{itemize}
 
-La validation conduite sur un jeu de données réaliste — 75~produits, 68~partenaires, 1000~commandes de vente et 1000~factures avec ventilation comptable — ainsi que les mesures de performance recueillies, ont confirmé la fiabilité de la solution et sa conformité à l'ensemble des besoins fonctionnels et non fonctionnels exprimés.
+La validation conduite sur un jeu de données réaliste (75~produits, 68~partenaires, 1000~commandes de vente et 1000~factures avec ventilation comptable), ainsi que les mesures de performance recueillies, ont confirmé la fiabilité de la solution et sa conformité à l'ensemble des besoins fonctionnels et non fonctionnels exprimés.
 
 % ─────────────────────────────────────────────────────────────
 \section*{Apports du stage}
@@ -37,14 +37,32 @@ Ce stage a constitué une expérience particulièrement enrichissante, tant sur 
 Il a permis de :
 
 \begin{itemize}
-  \item maîtriser l'architecture et les conventions d'Apache Hop dans un contexte d'intégration ERP réel, en appréhendant les subtilités des \textit{transforms}, des workflows et des contraintes de contournement de l'ORM Axelor ;
+  \item maîtriser Apache Hop dans un contexte d'intégration ERP réel~: construction des pipelines de transformation, orchestration par workflows et gestion des contraintes liées au contournement de l'ORM Axelor ;
   \item acquérir une expertise concrète en \textit{prompt engineering} appliqué à la génération de code technique structuré, notamment la conception de \textit{skills} conversationnels capables de produire du XML Hop valide à partir d'une description déclarative ;
   \item développer des compétences en développement \textit{full-stack} : conception d'une API FastAPI, d'une interface React avec terminal intégré xterm.js, et orchestration d'une session Claude via PTY WebSocket ;
-  \item renforcer la capacité à analyser un besoin métier complexe — ici la migration de données ERP avec gestion des clés étrangères, des contraintes d'intégrité référentielle et des séquences PostgreSQL — et à le traduire en une solution technique structurée, testée et documentée ;
+  \item renforcer la capacité à analyser un besoin métier complexe (migration de données ERP avec gestion des clés étrangères, des contraintes d'intégrité référentielle et des séquences PostgreSQL) et à le traduire en une solution technique structurée, testée et documentée ;
   \item s'intégrer au sein d'une équipe de consultants Axelor et adopter les pratiques professionnelles de gestion de projet incrémental, de versionnement et de livraison itérative.
 \end{itemize}
 
 Cette immersion au c\oe{}ur d'un projet à forte valeur métier a consolidé une vision d'ensemble de l'ingénierie des données et de l'intégration de systèmes d'information, et constitue un tremplin précieux vers une carrière dans la mise en \oe{}uvre de solutions ERP et d'architectures ETL.
+
+% ─────────────────────────────────────────────────────────────
+\section*{Limitations}
+% ─────────────────────────────────────────────────────────────
+
+Malgré les résultats obtenus, la solution présente plusieurs limitations qu'il convient d'identifier honnêtement.
+
+\begin{itemize}
+  \item \textbf{Source de données unique (CSV)} : le framework traite exclusivement des fichiers CSV. Les projets Axelor réels mobilisent fréquemment d'autres formats (Excel, exports XML d'ERP tiers, bases relationnelles externes), ce qui restreint le périmètre d'application immédiat de la solution.
+
+  \item \textbf{Architecture linéaire et fragilité en cas d'erreur} : le processus de génération — du manifeste JSON jusqu'aux pipelines Apache Hop — est séquentiel et peu tolérant aux anomalies. En cas d'erreur lors de la génération du manifeste ou des fichiers \texttt{.hpl}/\texttt{.hwf}, une intervention technique est nécessaire pour diagnostiquer et corriger le problème, ce qui limite l'autonomie du consultant fonctionnel.
+
+  \item \textbf{Lisibilité du manifeste JSON} : bien que le manifeste constitue un contrat d'interface structuré et versionnable, son format JSON brut peut paraître trop technique pour un consultant non développeur. L'absence d'une vue de synthèse lisible sur l'\textit{Axelor Import Studio} représente un frein à l'appropriation autonome de l'outil.
+
+  \item \textbf{Couverture fonctionnelle restreinte à quatre domaines} : seules les entités Produit, Partenaire, Commande de vente et Facture sont couvertes. Des modules critiques d'Axelor Open Suite (ordres de fabrication, mouvements de stock, comptabilité analytique) restent hors périmètre.
+
+  \item \textbf{Contournement de l'ORM Axelor} : l'écriture directe en base PostgreSQL, sans passer par la couche Hibernate d'Axelor, implique que les \textit{listeners} métier et les calculs déclenchés à la sauvegarde ne sont pas activés. Certains champs dérivés doivent être reproduits manuellement dans les pipelines, ce qui représente un risque de désynchronisation lors des montées de version d'Axelor.
+\end{itemize}
 
 % ─────────────────────────────────────────────────────────────
 \section*{Perspectives d'évolution}
@@ -52,13 +70,13 @@ Cette immersion au c\oe{}ur d'un projet à forte valeur métier a consolidé une
 
 La solution réalisée constitue un socle robuste sur lequel plusieurs évolutions à forte valeur ajoutée sont d'ores et déjà envisagées.
 
-L'axe d'évolution prioritaire est l'extension du framework à de nouveaux domaines fonctionnels d'Axelor Open Suite, notamment les \textbf{ordres de fabrication} (\textit{Manufacturing Order}) et les \textbf{mouvements de stock} (\textit{Stock Move}). Ces entités présentent des contraintes de cohérence plus exigeantes — liens avec les nomenclatures, les emplacements et les lots de traçabilité — et constitueront un véritable test de la généricité de l'architecture de \textit{gateway pipeline}.
+L'axe d'évolution prioritaire est l'extension du framework à de nouveaux domaines fonctionnels d'Axelor Open Suite, notamment les \textbf{ordres de fabrication} (\textit{Manufacturing Order}) et les \textbf{mouvements de stock} (\textit{Stock Move}). Ces entités présentent des contraintes de cohérence plus exigeantes (liens avec les nomenclatures, les emplacements et les lots de traçabilité) et constitueront un véritable test de la généricité de l'architecture de \textit{gateway pipeline}.
 
-Un second axe majeur concerne l'\textbf{élargissement des sources de données} supportées. La version actuelle traite exclusivement des fichiers CSV ; or, les projets d'intégration Axelor mobilisent des sources bien plus variées : fichiers Excel, bases de données relationnelles externes (PostgreSQL, MySQL), bases documentaires (MongoDB) ou encore exports XML issus d'autres ERP. Étendre le framework à ces formats permettrait de couvrir l'essentiel des contextes clients sans modifier les pipelines d'import aval.
+Un second axe majeur concerne l'\textbf{élargissement des sources de données} supportées. La version actuelle traite exclusivement des fichiers CSV ; or, les projets d'intégration Axelor mobilisent des sources bien plus variées : fichiers Excel, bases de données relationnelles externes (PostgreSQL, MySQL), bases documentaires (MongoDB) ou encore exports XML issus d'autres ERP. Étendre le framework à ces formats permettrait de couvrir l'essentiel des contextes clients rencontrés en production.
 
-Ces deux axes s'accompagnent d'un troisième, étroitement lié : l'intégration d'un \textbf{rapport de qualité de données} avant import. Ce mécanisme permettrait de détecter et de qualifier les anomalies de chaque ligne source — champs requis manquants, clés étrangères inexistantes, formats non conformes — avant toute écriture en base de données, réduisant significativement les itérations de correction et offrant au consultant une visibilité complète sur l'état de ses données avant toute mise en production.
+Ces deux axes s'accompagnent d'un troisième, étroitement lié : l'intégration d'un \textbf{rapport de qualité de données} avant import. Ce mécanisme permettrait de détecter et de qualifier les anomalies de chaque ligne source (champs requis manquants, clés étrangères inexistantes, formats non conformes) avant toute écriture en base de données, réduisant significativement les itérations de correction et offrant au consultant une visibilité complète sur l'état de ses données avant toute mise en production.
 
-D'autres pistes complètent cette vision : l'amélioration des \textit{skills} IA par capitalisation sur l'historique des mappings réussis pour proposer des configurations de plus en plus pertinentes, la \textbf{publication en open source} du framework afin de favoriser les contributions de la communauté Axelor, et la \textbf{généralisation au-delà d'Axelor} par abstraction de la couche de mapping pour supporter d'autres ERP open source tels qu'Odoo ou ERPNext.
+D'autres pistes complètent cette vision : l'amélioration des \textit{skills} IA par capitalisation sur l'historique des mappings réussis pour proposer des configurations de plus en plus pertinentes, et la \textbf{publication en open source} du framework afin de favoriser les contributions de la communauté Axelor.
 
 \vspace{0.5cm}
 

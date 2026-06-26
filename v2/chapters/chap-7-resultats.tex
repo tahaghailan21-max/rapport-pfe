@@ -26,11 +26,11 @@ Le golden dataset est construit pour tester les cas limites suivants~:
     \textbf{Caractéristique} & \textbf{Description} \\
     \midrule
     \rowcolor{gray!5}
-    Unités embarquées   & Les produits référencent les unités par nom (ex~: ``Jour ouvré'') au lieu d'un import\_id — teste le mode \texttt{fk\_source: embedded} \\
-    FK nullables        & Certains produits n'ont pas de BOM (\texttt{defaultBillOfMaterial} = null) — teste la tolérance aux FK optionnelles \\
+    Unités embarquées   & Les produits référencent les unités par nom (ex~: ``Jour ouvré'') au lieu d'un import\_id : teste le mode \texttt{fk\_source: embedded} \\
+    FK nullables        & Certains produits n'ont pas de BOM (\texttt{defaultBillOfMaterial} = null) : teste la tolérance aux FK optionnelles \\
     \rowcolor{gray!5}
-    Adresses embarquées & Les partenaires contiennent l'adresse en texte libre (``70 RUE PASTORELLI | 06000 NICE | FRANCE'') — teste le parsing et la création d'adresses \\
-    Taxes embarquées    & Les lignes de commandes et factures référencent les taxes par code — teste la résolution FK multi-niveaux \\
+    Adresses embarquées & Les partenaires contiennent l'adresse en texte libre (``70 RUE PASTORELLI | 06000 NICE | FRANCE'') : teste le parsing et la création d'adresses \\
+    Taxes embarquées    & Les lignes de commandes et factures référencent les taxes par code : teste la résolution FK multi-niveaux \\
     \rowcolor{gray!5}
     Volume              & 75 produits, 68 partenaires, 1\,000 commandes (3\,987 lignes), 1\,000 factures (3\,974 lignes) avec leurs lignes et jonctions \\
     \bottomrule
@@ -77,10 +77,10 @@ Le golden dataset est construit pour tester les cas limites suivants~:
 
 Les erreurs rencontrées correspondent à des cas volontairement introduits dans le dataset pour valider le comportement du framework face aux données incorrectes~:
 \begin{itemize}
-    \item \textbf{Produits (3 erreurs)~:} lignes dont le champ \texttt{name} était vide — rejetées car champ obligatoire ;
-    \item \textbf{Partenaires et adresses (4 erreurs)~:} partenaires dont le partenaire parent (\texttt{parentPartner}) ne pouvait pas être résolu — la ligne partenaire et l'adresse associée sont rejetées ensemble ;
+    \item \textbf{Produits (3 erreurs)~:} lignes dont le champ \texttt{name} était vide, rejetées car champ obligatoire ;
+    \item \textbf{Partenaires et adresses (4 erreurs)~:} partenaires dont le partenaire parent (\texttt{parentPartner}) ne pouvait pas être résolu : la ligne partenaire et l'adresse associée sont rejetées ensemble ;
     \item \textbf{Commandes de vente (38 erreurs)~:} commandes rejetées en raison d'une référence manquante non résolvable ;
-    \item \textbf{Factures (50 erreurs)~:} factures dont le statut (\texttt{statusSelect}) était absent — champ requis pour la ventilation.
+    \item \textbf{Factures (50 erreurs)~:} factures dont le statut (\texttt{statusSelect}) était absent, champ requis pour la ventilation.
 \end{itemize}
 Les lignes de détail (lignes de commande et lignes de facture) ne sont pas comptabilisées en erreur~: elles sont simplement non traitées lorsque leur document parent est rejeté.
 
@@ -90,7 +90,7 @@ Le critère de conformité retenu est la \textbf{ventilation} des factures dans 
 
 \begin{itemize}
     \item Les \textbf{mouvements comptables} (\emph{account move}) sont générés à la ventilation ;
-    \item Les \textbf{lignes de mouvement} (\emph{move lines}) — débit et crédit — sont créées avec les bons montants et comptes.
+    \item Les \textbf{lignes de mouvement} (\emph{move lines}) (débit et crédit) sont créées avec les bons montants et comptes.
 \end{itemize}
 
 \textbf{Résultat~:} la ventilation s'est exécutée avec succès. Les mouvements et lignes de mouvement ont été créés correctement, confirmant l'intégrité référentielle de l'ensemble de la chaîne d'import.
@@ -100,6 +100,19 @@ Le critère de conformité retenu est la \textbf{ventilation} des factures dans 
 Le workflow complet a été exécuté une seconde fois sur le même dataset. Résultat attendu~: aucun doublon créé, les enregistrements existants sont mis à jour uniquement si modifiés.
 
 \textbf{Résultat~:} 0 insertions, 0 mises à jour (données inchangées). Le mécanisme d'upsert via \texttt{import\_id} fonctionne correctement.
+
+\subsection{Validation de la génération IA}
+
+La performance du skill \texttt{generate-pipeline} n'a pas été évaluée par une métrique intrinsèque au modèle, mais par la \textbf{qualité fonctionnelle de ses outputs}. Cette approche est cohérente avec les pratiques du domaine : dans un contexte applicatif, ce qui importe est la conformité du code produit, et non les caractéristiques internes du modèle.
+
+Deux critères ont été retenus :
+
+\begin{itemize}
+  \item \textbf{Validité syntaxique} : les fichiers \texttt{.hpl} et \texttt{.hwf} générés sont acceptés par Apache Hop sans erreur de parsing — ils respectent le schéma XML attendu par le moteur ;
+  \item \textbf{Conformité fonctionnelle} : les pipelines générés ont été exécutés sur le golden dataset. Les résultats d'import (tableau~\ref{tab:resultats-import}) et la ventilation comptable réussie des factures constituent une validation end-to-end de la chaîne de génération IA.
+\end{itemize}
+
+Les quatre entités du framework (Produit, Partenaire, Commande de vente, Facture) ont été générées et validées avec succès sur ce jeu de données, ce qui confirme la robustesse du skill pour les cas couverts.
 
 %% ============================================================
 \section{Analyse des performances}

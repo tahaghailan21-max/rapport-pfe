@@ -57,6 +57,24 @@
   stringstyle=\color{red!70!black},
 }
 
+\lstdefinelanguage{json}{
+  basicstyle=\ttfamily\scriptsize,
+  showstringspaces=false,
+  breaklines=true,
+  breakatwhitespace=false,
+  columns=flexible,
+  keepspaces=true,
+  frame=single,
+  rulecolor=\color{borderGris},
+  backgroundcolor=\color{gray!4},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=6pt,
+  xleftmargin=14pt,
+  morestring=[b]",
+  stringstyle=\color{blue!65!black},
+}
+
 % ── Rotation de figures ─────────────────────────────────────
 \usepackage{rotating}
 
@@ -164,5 +182,9 @@
 % ── Bibliographie ───────────────────────────────────────────
 \printbibliography[heading=bibintoc, title={R\'ef\'erences}, nottype=misc]
 \printbibliography[heading=bibintoc, title={Webographie}, type=misc]
+
+% ── Annexes ─────────────────────────────────────────────────
+\appendix
+\include{chapters/annexes}
 
 \end{document}
